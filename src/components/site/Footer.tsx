@@ -64,9 +64,23 @@ export function Footer() {
 
         <div className="mt-14 flex flex-col gap-4 border-t border-white/10 pt-6 text-xs text-ink-foreground/60 md:flex-row md:items-center md:justify-between">
           <div>© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</div>
-          <div className="flex gap-5">
+          <div className="flex flex-wrap items-center gap-5">
             <Link to="/privacy" className="hover:text-ink-foreground">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-ink-foreground">Terms & Conditions</Link>
+            <a
+              href="https://dynime.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 hover:text-ink-foreground"
+            >
+              Crafted by
+              <span className="inline-flex items-center gap-0.5 font-medium text-primary">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                  <path d="M2 1l5 4-5 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                dynime
+              </span>
+            </a>
           </div>
         </div>
       </Container>
