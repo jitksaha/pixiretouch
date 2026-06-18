@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Container } from "./Container";
 import { BRAND, SERVICES } from "@/content/site";
+import dynimeLogoAsset from "@/assets/dynime-logo.svg.asset.json";
 
 export function Footer() {
   return (
