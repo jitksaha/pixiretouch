@@ -68,7 +68,7 @@ function Post() {
 
       <Container size="narrow" className="pb-20">
         <article className="space-y-5 text-lg leading-relaxed">
-          {p.body.split("\n\n").map((para, i) => (
+          {p.body.split("\n\n").map((para: string, i: number) => (
             <p key={i}>{para}</p>
           ))}
         </article>

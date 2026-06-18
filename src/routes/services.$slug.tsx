@@ -90,7 +90,7 @@ function ServiceDetail() {
             <Eyebrow>What's included</Eyebrow>
             <h2 className="mt-4 font-display text-3xl md:text-4xl">Every {service.title.toLowerCase()} edit delivers:</h2>
             <ul className="mt-8 space-y-4">
-              {service.features.map((f) => (
+              {service.features.map((f: string) => (
                 <li key={f} className="flex gap-3 border-t border-line pt-4">
                   <Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                   <span>{f}</span>
@@ -102,7 +102,7 @@ function ServiceDetail() {
             <Eyebrow>Industries</Eyebrow>
             <h2 className="mt-4 font-display text-3xl md:text-4xl">Where it fits best.</h2>
             <div className="mt-8 grid gap-3">
-              {service.industries.map((i) => (
+              {service.industries.map((i: string) => (
                 <div key={i} className="rounded-xl border border-border bg-card px-5 py-4">{i}</div>
               ))}
             </div>
@@ -122,7 +122,7 @@ function ServiceDetail() {
               <h2 className="mt-4 font-display text-3xl md:text-4xl">Common questions about {service.title.toLowerCase()}.</h2>
             </div>
             <Accordion type="single" collapsible className="rounded-2xl border border-border bg-background px-2">
-              {service.faqs.map((f, i) => (
+              {service.faqs.map((f: { q: string; a: string }, i: number) => (
                 <AccordionItem key={i} value={`f-${i}`} className="px-4">
                   <AccordionTrigger className="text-left font-medium">{f.q}</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground">{f.a}</AccordionContent>
