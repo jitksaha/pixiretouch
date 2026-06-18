@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container } from "./Container";
+import { Logo } from "./Logo";
 import { BRAND } from "@/content/site";
 import { cn } from "@/lib/utils";
 
@@ -38,13 +39,8 @@ export function Header() {
       )}
     >
       <Container className="flex h-16 items-center justify-between md:h-20">
-        <Link to="/" className="flex items-center gap-2" aria-label={BRAND.name}>
-          <span className="grid h-8 w-8 place-items-center rounded-md bg-foreground text-background">
-            <span className="font-display text-base leading-none">P</span>
-          </span>
-          <span className="font-display text-lg tracking-tight">
-            {BRAND.name}
-          </span>
+        <Link to="/" aria-label={BRAND.name} className="shrink-0">
+          <Logo variant="light" size={scrolled ? "sm" : "md"} />
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">

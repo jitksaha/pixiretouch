@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Container } from "./Container";
 import { BRAND, SERVICES } from "@/content/site";
+import { Logo } from "./Logo";
 import dynimeLogoAsset from "@/assets/dynime-logo.svg.asset.json";
 
 export function Footer() {
@@ -9,11 +10,8 @@ export function Footer() {
       <Container className="py-16 md:py-20">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link to="/" className="flex items-center gap-2">
-              <span className="grid h-9 w-9 place-items-center rounded-md bg-ink-foreground text-ink">
-                <span className="font-display text-base leading-none">P</span>
-              </span>
-              <span className="font-display text-xl">{BRAND.name}</span>
+            <Link to="/" aria-label={BRAND.name} className="inline-flex">
+              <Logo variant="dark" size="lg" />
             </Link>
             <p className="mt-4 max-w-sm text-sm text-ink-foreground/70">
               {BRAND.description}
