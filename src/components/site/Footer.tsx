@@ -72,15 +72,15 @@ export function Footer() {
               href="https://dynime.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 hover:text-ink-foreground"
+              className="inline-flex items-center gap-2 hover:text-ink-foreground"
             >
               Crafted by
-              <span className="inline-flex items-center gap-0.5 font-medium text-primary">
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-                  <path d="M2 1l5 4-5 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                dynime
-              </span>
+              <img
+                src={dynimeLogoAsset.url}
+                alt="dynime"
+                className="h-5 w-auto opacity-80 hover:opacity-100 transition-opacity"
+                loading="lazy"
+              />
             </a>
           </div>
         </div>
