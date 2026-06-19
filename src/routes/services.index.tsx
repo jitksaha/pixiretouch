@@ -7,7 +7,7 @@ import clippingImg from "@/assets/service-clipping.jpg";
 import ghostImg from "@/assets/service-ghost.jpg";
 import jewelryImg from "@/assets/service-jewelry.jpg";
 
-export const Route = createFileRoute("/services")({
+export const Route = createFileRoute("/services/")({
   head: () => ({
     meta: [
       { title: "Image Editing Services — Pixi Retouch" },
