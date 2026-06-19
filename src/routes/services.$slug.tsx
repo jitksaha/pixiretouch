@@ -184,6 +184,89 @@ function ServiceDetail() {
         </Container>
       </Section>
 
+      {/* Process */}
+      <Section className="bg-muted/20 border-y border-line">
+        <Container>
+          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <Eyebrow>How it works</Eyebrow>
+              <h2 className="mt-4 max-w-2xl font-display text-3xl md:text-4xl">From quote to delivery in four quiet steps.</h2>
+            </div>
+            <p className="max-w-sm text-sm text-muted-foreground">A repeatable workflow that's been delivering {service.title.toLowerCase()} batches to studios and brands for over a decade.</p>
+          </div>
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {PROCESS.map((p, i) => {
+              const Icon = PROCESS_ICONS[i] ?? Send;
+              return (
+                <div key={p.step} className="relative rounded-2xl border border-border bg-background p-6">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs font-semibold text-primary">{p.step}</span>
+                    <Icon className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <h3 className="mt-5 font-display text-xl">{p.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{p.body}</p>
+                </div>
+              );
+            })}
+          </div>
+        </Container>
+      </Section>
+
+      {/* Deliverables + formats */}
+      <Section>
+        <Container>
+          <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
+            <div>
+              <Eyebrow>Deliverables</Eyebrow>
+              <h2 className="mt-4 font-display text-3xl md:text-4xl">What lands in your inbox.</h2>
+              <p className="mt-5 text-muted-foreground">Files arrive named to your spec, organized by SKU or shoot, and ready to drop straight into your CMS, PIM or print pipeline.</p>
+              <div className="mt-8">
+                <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Supported formats</div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {FORMATS.map((f) => (
+                    <span key={f} className="rounded-md border border-border bg-muted/40 px-3 py-1.5 font-mono text-xs">{f}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {DELIVERABLES.map(({ icon: Icon, title, body }) => (
+                <div key={title} className="rounded-2xl border border-border bg-card p-6">
+                  <Icon className="h-6 w-6 text-primary" />
+                  <h3 className="mt-4 font-display text-lg">{title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Container>
+      </Section>
+
+      {/* Testimonial */}
+      <Section className="bg-muted/30 border-y border-line">
+        <Container>
+          {(() => {
+            const t = TESTIMONIALS[idx % TESTIMONIALS.length];
+            return (
+              <figure className="mx-auto max-w-3xl text-center">
+                <Quote className="mx-auto h-8 w-8 text-primary" />
+                <div className="mt-4 flex justify-center gap-1">
+                  {Array.from({ length: t.rating }).map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                  ))}
+                </div>
+                <blockquote className="mt-6 font-display text-2xl leading-snug md:text-3xl">
+                  "{t.quote}"
+                </blockquote>
+                <figcaption className="mt-6 text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">{t.name}</span> — {t.role}
+                </figcaption>
+              </figure>
+            );
+          })()}
+        </Container>
+      </Section>
+
       {/* FAQ */}
       {service.faqs.length > 0 && (
         <Section className="bg-muted/30">
