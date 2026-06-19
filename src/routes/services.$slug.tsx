@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
 import { TrialDialog } from "@/components/site/TrialDialog";
-import { SERVICES, PROCESS, TESTIMONIALS } from "@/content/site";
+import { SERVICES, PROCESS, TESTIMONIALS, PORTFOLIO, type PortfolioItem } from "@/content/site";
 import { serviceImage } from "@/content/serviceImages";
+import { BeforeAfter } from "@/components/site/BeforeAfter";
 
 const PROCESS_ICONS = [Send, Sparkles, Upload, FileCheck];
 const FORMATS = ["JPG", "PNG", "TIFF", "PSD", "WEBP", "RAW"];
@@ -15,6 +16,29 @@ const DELIVERABLES = [
   { icon: Shield, title: "Transparent or matte", body: "Clean alpha cutouts, pure-white #FFFFFF, or your branded background." },
   { icon: Sparkles, title: "Color-managed output", body: "sRGB, Adobe RGB or CMYK — soft-proofed for the destination." },
 ];
+
+// Map service slug → portfolio categories that best illustrate it.
+const SLUG_TO_CATEGORIES: Record<string, string[]> = {
+  "clipping-path": ["Clipping Path", "Background Removal"],
+  "background-removal": ["Background Removal", "Clipping Path"],
+  "image-masking": ["Background Removal", "Clipping Path"],
+  "shadow-creation": ["Background Removal", "Clipping Path"],
+  "ghost-mannequin": ["Ghost Mannequin"],
+  "product-photo-retouching": ["Retouching", "Background Removal"],
+  "jewelry-retouching": ["Jewelry", "Retouching"],
+  "ecommerce-image-editing": ["Background Removal", "Clipping Path", "Retouching"],
+  "color-correction": ["Color Correction"],
+  "photo-restoration": ["Retouching"],
+  "photo-manipulation": ["Retouching", "Color Correction"],
+  "neck-joint": ["Ghost Mannequin"],
+  "image-enhancement": ["Retouching", "Color Correction"],
+};
+
+function pairsForService(slug: string): PortfolioItem[] {
+  const cats = SLUG_TO_CATEGORIES[slug] ?? [];
+  const matches = PORTFOLIO.filter((p) => cats.includes(p.category));
+  return (matches.length ? matches : PORTFOLIO).slice(0, 3);
+}
 
 export const Route = createFileRoute("/services/$slug")({
   loader: ({ params }) => {
