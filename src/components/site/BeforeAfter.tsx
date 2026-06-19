@@ -9,19 +9,23 @@ export type BeforeAfterPair = {
   title?: string;
 };
 
-type Props = {
-  pair: BeforeAfterPair;
+type Props = Partial<BeforeAfterPair> & {
+  pair?: BeforeAfterPair;
+  before?: string;
+  after?: string;
+  title?: string;
   className?: string;
   initial?: number; // 0-100
 };
 
-export function BeforeAfter({ pair, className, initial = 50 }: Props) {
+export function BeforeAfter({ pair, before, after, title, className, initial = 50 }: Props) {
+  const resolved: BeforeAfterPair = pair ?? { before: before!, after: after!, title };
   const [pos, setPos] = useState(initial);
   const [open, setOpen] = useState(false);
   return (
     <>
       <div className={cn("group relative overflow-hidden rounded-2xl border border-border bg-muted/40", className)}>
-        <Slider pos={pos} setPos={setPos} pair={pair} />
+        <Slider pos={pos} setPos={setPos} pair={resolved} />
         <button
           type="button"
           onClick={() => setOpen(true)}
