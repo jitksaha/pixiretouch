@@ -5,9 +5,9 @@ type Variant = "light" | "dark";
 type Size = "sm" | "md" | "lg";
 
 const SIZE = {
-  sm: { mark: "h-7 w-7", dot: "h-1.5 w-1.5", text: "text-base", gap: "gap-2" },
-  md: { mark: "h-9 w-9", dot: "h-2 w-2", text: "text-lg", gap: "gap-2.5" },
-  lg: { mark: "h-11 w-11", dot: "h-2.5 w-2.5", text: "text-2xl", gap: "gap-3" },
+  sm: { mark: "h-7 w-7", text: "text-base", gap: "gap-2" },
+  md: { mark: "h-9 w-9", text: "text-lg", gap: "gap-2.5" },
+  lg: { mark: "h-11 w-11", text: "text-2xl", gap: "gap-3" },
 } as const;
 
 export function Logo({
@@ -23,46 +23,52 @@ export function Logo({
 }) {
   const s = SIZE[size];
   const isDark = variant === "dark";
+  const fg = isDark ? "text-ink-foreground" : "text-foreground";
+  const subtle = isDark ? "text-ink-foreground/60" : "text-foreground/55";
 
   return (
-    <span className={cn("inline-flex items-center", s.gap, className)} aria-label={BRAND.name}>
-      <span
-        className={cn(
-          "relative grid place-items-center rounded-[10px] ring-1 transition-colors",
-          s.mark,
-          isDark
-            ? "bg-ink-foreground text-ink ring-white/15"
-            : "bg-foreground text-background ring-black/5"
-        )}
-      >
-        <span
-          className={cn(
-            "font-display font-medium leading-none",
-            size === "lg" ? "text-xl" : size === "md" ? "text-base" : "text-sm"
-          )}
+    <span
+      className={cn("inline-flex items-center", s.gap, className)}
+      aria-label={BRAND.name}
+    >
+      <span className={cn("relative inline-block", s.mark, fg)} aria-hidden>
+        <svg
+          viewBox="0 0 40 40"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-full w-full"
         >
-          P
-        </span>
-        <span
-          className={cn(
-            "absolute -right-0.5 -top-0.5 rounded-full ring-2",
-            s.dot,
-            "bg-primary",
-            isDark ? "ring-ink" : "ring-background"
-          )}
-          aria-hidden
-        />
+          {/* aperture ring */}
+          <circle
+            cx="20"
+            cy="20"
+            r="17"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeOpacity="0.9"
+          />
+          {/* inner geometric blades */}
+          <path
+            d="M20 6 L31 13 L31 27 L20 34 L9 27 L9 13 Z"
+            stroke="currentColor"
+            strokeWidth="1.25"
+            strokeOpacity="0.35"
+            strokeLinejoin="round"
+          />
+          {/* center dot accent */}
+          <circle cx="20" cy="20" r="3.5" fill="var(--primary)" />
+          <circle cx="20" cy="20" r="1.25" fill="currentColor" />
+        </svg>
       </span>
       {withWordmark && (
         <span
           className={cn(
-            "font-display tracking-tight leading-none",
-            s.text,
-            isDark ? "text-ink-foreground" : "text-foreground"
+            "font-display leading-none tracking-tight inline-flex items-baseline",
+            s.text
           )}
         >
-          Pixi<span className="text-primary">.</span>
-          <span className="font-sans font-medium tracking-tight ml-0.5">Retouch</span>
+          <span className={cn("font-semibold", fg)}>pixi</span>
+          <span className={cn("font-normal ml-1", subtle)}>retouch</span>
         </span>
       )}
     </span>
