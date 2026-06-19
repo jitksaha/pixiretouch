@@ -9,27 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
-import { Route as QuoteRouteImport } from './routes/quote'
-import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SampleRouteImport } from './routes/sample'
 import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as PortfolioRouteImport } from './routes/portfolio'
-import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
-import { Route as BeforeAfterRouteImport } from './routes/before-after'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -40,29 +29,14 @@ const ServicesRoute = ServicesRouteImport.update({
   path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
-const QuoteRoute = QuoteRouteImport.update({
-  id: '/quote',
-  path: '/quote',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
+const SampleRoute = SampleRouteImport.update({
+  id: '/sample',
+  path: '/sample',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortfolioRoute = PortfolioRouteImport.update({
-  id: '/portfolio',
-  path: '/portfolio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -73,16 +47,6 @@ const ContactRoute = ContactRouteImport.update({
 const BlogRoute = BlogRouteImport.update({
   id: '/blog',
   path: '/blog',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BeforeAfterRoute = BeforeAfterRouteImport.update({
-  id: '/before-after',
-  path: '/before-after',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -103,53 +67,35 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/before-after': typeof BeforeAfterRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
-  '/faq': typeof FaqRoute
-  '/portfolio': typeof PortfolioRoute
   '/pricing': typeof PricingRoute
-  '/privacy': typeof PrivacyRoute
-  '/quote': typeof QuoteRoute
+  '/sample': typeof SampleRoute
   '/services': typeof ServicesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/terms': typeof TermsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/before-after': typeof BeforeAfterRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
-  '/faq': typeof FaqRoute
-  '/portfolio': typeof PortfolioRoute
   '/pricing': typeof PricingRoute
-  '/privacy': typeof PrivacyRoute
-  '/quote': typeof QuoteRoute
+  '/sample': typeof SampleRoute
   '/services': typeof ServicesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/terms': typeof TermsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/before-after': typeof BeforeAfterRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
-  '/faq': typeof FaqRoute
-  '/portfolio': typeof PortfolioRoute
   '/pricing': typeof PricingRoute
-  '/privacy': typeof PrivacyRoute
-  '/quote': typeof QuoteRoute
+  '/sample': typeof SampleRoute
   '/services': typeof ServicesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/terms': typeof TermsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
 }
@@ -157,81 +103,50 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
-    | '/before-after'
     | '/blog'
     | '/contact'
-    | '/faq'
-    | '/portfolio'
     | '/pricing'
-    | '/privacy'
-    | '/quote'
+    | '/sample'
     | '/services'
     | '/sitemap.xml'
-    | '/terms'
     | '/blog/$slug'
     | '/services/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
-    | '/before-after'
     | '/blog'
     | '/contact'
-    | '/faq'
-    | '/portfolio'
     | '/pricing'
-    | '/privacy'
-    | '/quote'
+    | '/sample'
     | '/services'
     | '/sitemap.xml'
-    | '/terms'
     | '/blog/$slug'
     | '/services/$slug'
   id:
     | '__root__'
     | '/'
-    | '/about'
-    | '/before-after'
     | '/blog'
     | '/contact'
-    | '/faq'
-    | '/portfolio'
     | '/pricing'
-    | '/privacy'
-    | '/quote'
+    | '/sample'
     | '/services'
     | '/sitemap.xml'
-    | '/terms'
     | '/blog/$slug'
     | '/services/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
-  BeforeAfterRoute: typeof BeforeAfterRoute
   BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
-  FaqRoute: typeof FaqRoute
-  PortfolioRoute: typeof PortfolioRoute
   PricingRoute: typeof PricingRoute
-  PrivacyRoute: typeof PrivacyRoute
-  QuoteRoute: typeof QuoteRoute
+  SampleRoute: typeof SampleRoute
   ServicesRoute: typeof ServicesRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -246,18 +161,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/quote': {
-      id: '/quote'
-      path: '/quote'
-      fullPath: '/quote'
-      preLoaderRoute: typeof QuoteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
+    '/sample': {
+      id: '/sample'
+      path: '/sample'
+      fullPath: '/sample'
+      preLoaderRoute: typeof SampleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -265,20 +173,6 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portfolio': {
-      id: '/portfolio'
-      path: '/portfolio'
-      fullPath: '/portfolio'
-      preLoaderRoute: typeof PortfolioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -293,20 +187,6 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog'
       preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/before-after': {
-      id: '/before-after'
-      path: '/before-after'
-      fullPath: '/before-after'
-      preLoaderRoute: typeof BeforeAfterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -357,18 +237,12 @@ const ServicesRouteWithChildren = ServicesRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
-  BeforeAfterRoute: BeforeAfterRoute,
   BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
-  FaqRoute: FaqRoute,
-  PortfolioRoute: PortfolioRoute,
   PricingRoute: PricingRoute,
-  PrivacyRoute: PrivacyRoute,
-  QuoteRoute: QuoteRoute,
+  SampleRoute: SampleRoute,
   ServicesRoute: ServicesRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

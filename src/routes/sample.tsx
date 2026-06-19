@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { PORTFOLIO, PORTFOLIO_CATEGORIES, type PortfolioItem } from "@/content/site";
 
-export const Route = createFileRoute("/portfolio")({
+export const Route = createFileRoute("/sample")({
   head: () => ({
     meta: [
       { title: "Portfolio — Pixi Retouch" },
