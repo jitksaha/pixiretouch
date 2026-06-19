@@ -131,6 +131,28 @@ function ServiceDetail() {
         </Container>
       </Section>
 
+      {/* Stats strip */}
+      <Section className="!py-10 border-y border-line bg-muted/20">
+        <Container>
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+            {[
+              { icon: Clock, k: "45 min", v: "Avg. quote response" },
+              { icon: Zap, k: "6–24 h", v: "Standard turnaround" },
+              { icon: Shield, k: "3-step", v: "Quality control" },
+              { icon: Sparkles, k: "100%", v: "Hand-edited, no AI traces" },
+            ].map(({ icon: Icon, k, v }) => (
+              <div key={k} className="flex items-start gap-3">
+                <Icon className="mt-1 h-5 w-5 text-primary" />
+                <div>
+                  <div className="font-display text-2xl">{k}</div>
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground">{v}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
       {/* Included + Industries */}
       <Section>
         <Container className="grid gap-12 lg:grid-cols-2">
