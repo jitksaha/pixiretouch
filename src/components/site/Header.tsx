@@ -7,15 +7,14 @@ import { Logo } from "./Logo";
 import { BRAND, SERVICES } from "@/content/site";
 import { cn } from "@/lib/utils";
 
-type NavItem = { to: string; label: string; hasSubmenu?: boolean };
-const NAV: NavItem[] = [
-  { to: "/", label: "Home" },
+const NAV = [
+  { to: "/", label: "Home", hasSubmenu: false },
   { to: "/services", label: "Services", hasSubmenu: true },
-  { to: "/sample", label: "Sample" },
-  { to: "/contact", label: "Contact Us" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/blog", label: "Blog" },
-];
+  { to: "/sample", label: "Sample", hasSubmenu: false },
+  { to: "/contact", label: "Contact Us", hasSubmenu: false },
+  { to: "/pricing", label: "Pricing", hasSubmenu: false },
+  { to: "/blog", label: "Blog", hasSubmenu: false },
+] as const;
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
