@@ -28,7 +28,7 @@ const num = (slug: string) => String(indexOf(slug) + 1).padStart(2, "0");
 const get = (slug: string) => SERVICES.find((s) => s.slug === slug)!;
 
 const FEATURED = ["clipping-path", "background-removal", "ghost-mannequin", "jewelry-retouching"];
-const STRIP = ["shadow-creation", "product-retouching", "color-correction", "photo-restoration"];
+const STRIP = ["shadow-creation", "product-photo-retouching", "color-correction", "photo-restoration"];
 
 function ServicesIndex() {
   const clipping = get("clipping-path");
