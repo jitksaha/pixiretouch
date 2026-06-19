@@ -1,11 +1,20 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Clock, Shield, Zap, Layers, FileImage, Sparkles, Quote, Star, Upload, FileCheck, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
 import { TrialDialog } from "@/components/site/TrialDialog";
-import { SERVICES } from "@/content/site";
+import { SERVICES, PROCESS, TESTIMONIALS } from "@/content/site";
 import { serviceImage } from "@/content/serviceImages";
+
+const PROCESS_ICONS = [Send, Sparkles, Upload, FileCheck];
+const FORMATS = ["JPG", "PNG", "TIFF", "PSD", "WEBP", "RAW"];
+const DELIVERABLES = [
+  { icon: Layers, title: "Layered PSD", body: "Non-destructive layers, named groups, masks intact for further edits." },
+  { icon: FileImage, title: "Any format, any size", body: "Web-ready JPG/PNG/WebP or press-ready TIFF/PSD at your spec." },
+  { icon: Shield, title: "Transparent or matte", body: "Clean alpha cutouts, pure-white #FFFFFF, or your branded background." },
+  { icon: Sparkles, title: "Color-managed output", body: "sRGB, Adobe RGB or CMYK — soft-proofed for the destination." },
+];
 
 export const Route = createFileRoute("/services/$slug")({
   loader: ({ params }) => {
