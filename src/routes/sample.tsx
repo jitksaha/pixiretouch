@@ -8,15 +8,15 @@ import { PORTFOLIO, PORTFOLIO_CATEGORIES, type PortfolioItem } from "@/content/s
 export const Route = createFileRoute("/sample")({
   head: () => ({
     meta: [
-      { title: "Portfolio — Pixi Retouch" },
+      { title: "Sample Work — Pixi Retouch" },
       { name: "description", content: "Selected before/after retouching work for ecommerce, fashion, jewelry and product brands." },
-      { property: "og:title", content: "Portfolio — Pixi Retouch" },
+      { property: "og:title", content: "Sample Work — Pixi Retouch" },
       { property: "og:description", content: "Selected retouching work from the Pixi Retouch studio." },
       { property: "og:url", content: "/sample" },
     ],
     links: [{ rel: "canonical", href: "/sample" }],
   }),
-  component: Portfolio,
+  component: Sample,
 });
 
 function Sample() {

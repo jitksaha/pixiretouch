@@ -15,7 +15,7 @@ export function StickyCTAs() {
         <MessageCircle className="h-5 w-5" />
       </a>
       <Link
-        to="/quote"
+        to="/contact"
         className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background shadow-lift transition-transform hover:scale-[1.02] md:hidden"
       >
         Get Free Quote

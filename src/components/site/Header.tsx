@@ -10,11 +10,11 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { to: "/", label: "Home" },
   { to: "/services", label: "Services" },
-  { to: "/portfolio", label: "Portfolio" },
-  { to: "/before-after", label: "Before / After" },
+  { to: "/sample", label: "Portfolio" },
+  { to: "/sample", label: "Before / After" },
   { to: "/pricing", label: "Pricing" },
   { to: "/blog", label: "Blog" },
-  { to: "/about", label: "About" },
+  { to: "/contact", label: "About" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -59,10 +59,10 @@ export function Header() {
 
         <div className="hidden items-center gap-2 lg:flex">
           <Button asChild variant="ghost" size="sm">
-            <Link to="/quote">Free Trial</Link>
+            <Link to="/contact">Free Trial</Link>
           </Button>
           <Button asChild size="sm">
-            <Link to="/quote">Get a Quote</Link>
+            <Link to="/contact">Get a Quote</Link>
           </Button>
         </div>
 
@@ -91,10 +91,10 @@ export function Header() {
             ))}
             <div className="mt-3 flex gap-2 pt-3 hairline">
               <Button asChild variant="outline" className="flex-1">
-                <Link to="/quote" onClick={() => setOpen(false)}>Free Trial</Link>
+                <Link to="/contact" onClick={() => setOpen(false)}>Free Trial</Link>
               </Button>
               <Button asChild className="flex-1">
-                <Link to="/quote" onClick={() => setOpen(false)}>Get Quote</Link>
+                <Link to="/contact" onClick={() => setOpen(false)}>Get Quote</Link>
               </Button>
             </div>
           </Container>

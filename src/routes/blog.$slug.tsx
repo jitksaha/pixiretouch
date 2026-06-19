@@ -75,7 +75,7 @@ function Post() {
 
         <aside className="mt-12 rounded-xl border border-border bg-muted/40 p-6 text-sm">
           Looking for retouching that matches what you read here? Start with a{" "}
-          <Link to="/quote" className="font-medium underline-offset-4 hover:underline">free trial edit</Link>,
+          <Link to="/contact" className="font-medium underline-offset-4 hover:underline">free trial edit</Link>,
           or explore our parent network at{" "}
           <a href="https://pixiraw.com" target="_blank" rel="noreferrer" className="font-medium underline-offset-4 hover:underline">Pixiraw.com</a>.
         </aside>

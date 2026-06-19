@@ -72,8 +72,8 @@ function ServiceDetail() {
             <h1 className="mt-5 font-display text-5xl md:text-6xl">{service.title}</h1>
             <p className="mt-5 text-lg text-muted-foreground">{service.description}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg"><Link to="/quote" search={{ service: service.slug } as never}>Get a quote <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
-              <Button asChild size="lg" variant="outline"><Link to="/portfolio">See examples</Link></Button>
+              <Button asChild size="lg"><Link to="/contact" search={{ service: service.slug } as never}>Get a quote <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
+              <Button asChild size="lg" variant="outline"><Link to="/sample">See examples</Link></Button>
             </div>
           </div>
           <BeforeAfter
@@ -151,7 +151,7 @@ function ServiceDetail() {
         <Container className="text-center">
           <h2 className="mx-auto max-w-3xl font-display text-4xl md:text-5xl">Try {service.title.toLowerCase()} on two free images.</h2>
           <div className="mt-8">
-            <Button asChild size="lg" variant="secondary"><Link to="/quote">Start free trial</Link></Button>
+            <Button asChild size="lg" variant="secondary"><Link to="/contact">Start free trial</Link></Button>
           </div>
         </Container>
       </Section>

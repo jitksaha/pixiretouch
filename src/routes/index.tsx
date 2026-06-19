@@ -57,10 +57,10 @@ function Hero() {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Button asChild size="lg">
-              <Link to="/quote">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
+              <Link to="/contact">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link to="/portfolio">See the work</Link>
+              <Link to="/sample">See the work</Link>
             </Button>
           </div>
           <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
@@ -148,7 +148,7 @@ function BeforeAfterShowcase() {
           </p>
           <div className="mt-8">
             <Button asChild size="lg" variant="secondary">
-              <Link to="/before-after">More comparisons</Link>
+              <Link to="/sample">More comparisons</Link>
             </Button>
           </div>
         </div>
@@ -219,7 +219,7 @@ function PortfolioTeaser() {
             <Eyebrow>Selected work</Eyebrow>
             <h2 className="mt-4 font-display text-4xl md:text-5xl">A small sample of recent batches.</h2>
           </div>
-          <Link to="/portfolio" className="hidden text-sm font-medium underline-offset-4 hover:underline md:inline">Full portfolio →</Link>
+          <Link to="/sample" className="hidden text-sm font-medium underline-offset-4 hover:underline md:inline">Full portfolio →</Link>
         </div>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {PORTFOLIO.slice(0, 6).map((p) => (
@@ -360,7 +360,7 @@ function FinalCta() {
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
           <Button asChild size="lg" variant="secondary">
-            <Link to="/quote">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
+            <Link to="/contact">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="border-ink-foreground/30 bg-transparent text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground">
             <Link to="/contact">Talk to the team</Link>
