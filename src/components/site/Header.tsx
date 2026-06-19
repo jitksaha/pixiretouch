@@ -16,6 +16,22 @@ const NAV = [
   { to: "/blog", label: "Blog", hasSubmenu: false },
 ] as const;
 
+// Curated submenu — only these services appear in the Services dropdown.
+const NAV_SERVICE_SLUGS: { slug: string; label: string }[] = [
+  { slug: "clipping-path", label: "Photoshop Clipping Path" },
+  { slug: "product-photo-retouching", label: "Photo Retouching" },
+  { slug: "shadow-creation", label: "Shadow Creation" },
+  { slug: "background-removal", label: "Background Removing" },
+  { slug: "neck-joint", label: "Neck Joint" },
+  { slug: "ecommerce-image-editing", label: "Ecommerce Image Editing" },
+];
+const NAV_SERVICES = NAV_SERVICE_SLUGS
+  .map((n) => {
+    const s = SERVICES.find((x) => x.slug === n.slug);
+    return s ? { slug: s.slug, title: n.label } : null;
+  })
+  .filter((x): x is { slug: string; title: string } => Boolean(x));
+
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
