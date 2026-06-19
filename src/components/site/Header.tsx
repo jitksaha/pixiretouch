@@ -54,7 +54,7 @@ export function Header() {
           : "bg-background"
       )}
     >
-      <Container className="flex h-14 items-center justify-between md:h-16">
+      <Container className="flex h-12 items-center justify-between md:h-14">
         <Link to="/" aria-label={BRAND.name} className="shrink-0">
           <Logo variant="light" size={scrolled ? "sm" : "md"} />
         </Link>
