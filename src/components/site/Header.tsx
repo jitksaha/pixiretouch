@@ -1,26 +1,27 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container } from "./Container";
 import { Logo } from "./Logo";
-import { BRAND } from "@/content/site";
+import { BRAND, SERVICES } from "@/content/site";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/", label: "Home" },
-  { to: "/services", label: "Services" },
-  { to: "/portfolio", label: "Portfolio" },
-  { to: "/before-after", label: "Before / After" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/blog", label: "Blog" },
-  { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
+  { to: "/", label: "Home", hasSubmenu: false },
+  { to: "/services", label: "Services", hasSubmenu: true },
+  { to: "/sample", label: "Sample", hasSubmenu: false },
+  { to: "/contact", label: "Contact Us", hasSubmenu: false },
+  { to: "/pricing", label: "Pricing", hasSubmenu: false },
+  { to: "/blog", label: "Blog", hasSubmenu: false },
 ] as const;
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -28,6 +29,15 @@ export function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const openDropdown = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setServicesOpen(true);
+  };
+  const closeDropdown = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setServicesOpen(false), 120);
+  };
 
   return (
     <header
@@ -44,25 +54,78 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
-          {NAV.map((n) => (
-            <Link
-              key={n.to}
-              to={n.to}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-              activeProps={{ className: "text-foreground" }}
-              activeOptions={{ exact: n.to === "/" }}
-            >
-              {n.label}
-            </Link>
-          ))}
+          {NAV.map((n) =>
+            n.hasSubmenu ? (
+              <div
+                key={n.to}
+                className="relative"
+                onMouseEnter={openDropdown}
+                onMouseLeave={closeDropdown}
+              >
+                <Link
+                  to={n.to}
+                  className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  activeProps={{ className: "text-foreground" }}
+                >
+                  {n.label}
+                  <ChevronDown
+                    className={cn(
+                      "h-3.5 w-3.5 transition-transform",
+                      servicesOpen && "rotate-180"
+                    )}
+                  />
+                </Link>
+
+                {servicesOpen && (
+                  <div
+                    className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3"
+                    onMouseEnter={openDropdown}
+                    onMouseLeave={closeDropdown}
+                  >
+                    <div className="w-[420px] rounded-xl border border-border bg-background p-2 shadow-lift">
+                      <div className="grid grid-cols-2 gap-1">
+                        {SERVICES.map((s) => (
+                          <Link
+                            key={s.slug}
+                            to="/services/$slug"
+                            params={{ slug: s.slug }}
+                            onClick={() => setServicesOpen(false)}
+                            className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          >
+                            {s.title}
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="mt-1 border-t border-border pt-1">
+                        <Link
+                          to="/services"
+                          onClick={() => setServicesOpen(false)}
+                          className="block rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                        >
+                          View all services →
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                key={n.to}
+                to={n.to}
+                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                activeProps={{ className: "text-foreground" }}
+                activeOptions={{ exact: n.to === "/" }}
+              >
+                {n.label}
+              </Link>
+            )
+          )}
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <Button asChild variant="ghost" size="sm">
-            <Link to="/quote">Free Trial</Link>
-          </Button>
           <Button asChild size="sm">
-            <Link to="/quote">Get a Quote</Link>
+            <Link to="/contact">Get a Quote</Link>
           </Button>
         </div>
 
@@ -79,22 +142,58 @@ export function Header() {
       {open && (
         <div className="border-t border-border bg-background lg:hidden">
           <Container className="flex flex-col gap-1 py-4">
-            {NAV.map((n) => (
-              <Link
-                key={n.to}
-                to={n.to}
-                onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-base text-foreground hover:bg-muted"
-              >
-                {n.label}
-              </Link>
-            ))}
-            <div className="mt-3 flex gap-2 pt-3 hairline">
-              <Button asChild variant="outline" className="flex-1">
-                <Link to="/quote" onClick={() => setOpen(false)}>Free Trial</Link>
-              </Button>
-              <Button asChild className="flex-1">
-                <Link to="/quote" onClick={() => setOpen(false)}>Get Quote</Link>
+            {NAV.map((n) =>
+              n.hasSubmenu ? (
+                <div key={n.to}>
+                  <button
+                    onClick={() => setMobileServicesOpen((v) => !v)}
+                    className="flex w-full items-center justify-between rounded-md px-3 py-2 text-base text-foreground hover:bg-muted"
+                  >
+                    {n.label}
+                    <ChevronDown
+                      className={cn(
+                        "h-4 w-4 transition-transform",
+                        mobileServicesOpen && "rotate-180"
+                      )}
+                    />
+                  </button>
+                  {mobileServicesOpen && (
+                    <div className="ml-3 mt-1 flex flex-col gap-0.5 border-l border-border pl-3">
+                      {SERVICES.map((s) => (
+                        <Link
+                          key={s.slug}
+                          to="/services/$slug"
+                          params={{ slug: s.slug }}
+                          onClick={() => setOpen(false)}
+                          className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                        >
+                          {s.title}
+                        </Link>
+                      ))}
+                      <Link
+                        to="/services"
+                        onClick={() => setOpen(false)}
+                        className="rounded-md px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted"
+                      >
+                        View all services
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={n.to}
+                  to={n.to}
+                  onClick={() => setOpen(false)}
+                  className="rounded-md px-3 py-2 text-base text-foreground hover:bg-muted"
+                >
+                  {n.label}
+                </Link>
+              )
+            )}
+            <div className="mt-3 pt-3 hairline">
+              <Button asChild className="w-full">
+                <Link to="/contact" onClick={() => setOpen(false)}>Get a Quote</Link>
               </Button>
             </div>
           </Container>

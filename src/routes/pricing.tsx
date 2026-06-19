@@ -87,7 +87,7 @@ function Pricing() {
                 </ul>
                 <div className="mt-10">
                   <Button asChild className="w-full" variant={t.featured ? "secondary" : "default"}>
-                    <Link to="/quote">{t.cta}</Link>
+                    <Link to="/contact">{t.cta}</Link>
                   </Button>
                 </div>
               </div>
@@ -121,7 +121,7 @@ function Pricing() {
       <Section ink>
         <Container className="text-center">
           <h2 className="mx-auto max-w-3xl font-display text-4xl md:text-5xl">Get an exact per-image rate in 45 minutes.</h2>
-          <div className="mt-8"><Button asChild size="lg" variant="secondary"><Link to="/quote">Get a quote</Link></Button></div>
+          <div className="mt-8"><Button asChild size="lg" variant="secondary"><Link to="/contact">Get a quote</Link></Button></div>
         </Container>
       </Section>
     </>

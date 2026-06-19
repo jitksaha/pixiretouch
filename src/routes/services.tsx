@@ -65,7 +65,7 @@ function ServicesIndex() {
           <h2 className="mx-auto max-w-3xl font-display text-4xl md:text-6xl">Not sure which service you need?</h2>
           <p className="mx-auto mt-4 max-w-xl text-ink-foreground/70">Send a sample image. We'll recommend the right combination and quote it free.</p>
           <div className="mt-8">
-            <Button asChild size="lg" variant="secondary"><Link to="/quote">Get a recommendation</Link></Button>
+            <Button asChild size="lg" variant="secondary"><Link to="/contact">Get a recommendation</Link></Button>
           </div>
         </Container>
       </Section>
