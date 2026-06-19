@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Maximize2, MoveHorizontal, X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
@@ -86,33 +86,28 @@ function Slider({
     [setPos]
   );
 
-  useEffect(() => {
-    const move = (e: PointerEvent) => {
-      if (!dragging.current) return;
-      update(e.clientX);
-    };
-    const up = () => (dragging.current = false);
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
-    window.addEventListener("pointercancel", up);
-    return () => {
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-      window.removeEventListener("pointercancel", up);
-    };
-  }, [update]);
-
   return (
     <div
       ref={ref}
       className={cn(
-        "relative w-full select-none touch-none",
+        "relative w-full select-none touch-none cursor-ew-resize",
         tall ? "aspect-[4/3] max-h-[85vh]" : "aspect-[4/3]"
       )}
       onPointerDown={(e) => {
         dragging.current = true;
-        (e.target as Element).setPointerCapture?.(e.pointerId);
+        ref.current?.setPointerCapture(e.pointerId);
         update(e.clientX);
+      }}
+      onPointerMove={(e) => {
+        if (!dragging.current) return;
+        update(e.clientX);
+      }}
+      onPointerUp={(e) => {
+        dragging.current = false;
+        ref.current?.releasePointerCapture?.(e.pointerId);
+      }}
+      onPointerCancel={() => {
+        dragging.current = false;
       }}
       onKeyDown={(e) => {
         if (e.key === "ArrowLeft") setPos(Math.max(0, pos - 4));
