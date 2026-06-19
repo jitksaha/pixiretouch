@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { z } from "zod";
-import { ArrowLeft, ArrowRight, Check, Upload } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, HelpCircle, Upload } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -21,8 +21,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
-import { QUOTE_SERVICES, TURNAROUNDS } from "@/content/site";
+import { QUOTE_SERVICES, TURNAROUNDS, FAQS } from "@/content/site";
 
 type Form = {
   service: string;
