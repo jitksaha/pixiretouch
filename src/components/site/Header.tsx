@@ -183,9 +183,9 @@ export function Header() {
               )
             )}
             <div className="mt-3 pt-3 hairline">
-              <Button asChild className="w-full">
-                <Link to="/contact" onClick={() => setOpen(false)}>Get a Quote</Link>
-              </Button>
+              <TrialDialog title="Get a quote" description="Tell us about your project — we reply within 45 minutes with a firm rate and a free trial edit.">
+                <Button className="w-full" onClick={() => setOpen(false)}>Get a Quote</Button>
+              </TrialDialog>
             </div>
           </Container>
         </div>
