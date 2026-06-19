@@ -32,26 +32,33 @@ export function Footer() {
 
           <FooterCol title="Services">
             {SERVICES.slice(0, 7).map((s) => (
-              <FooterLink key={s.slug} to="/services/$slug" params={{ slug: s.slug }}>
-                {s.title}
-              </FooterLink>
+              <li key={s.slug}>
+                <Link
+                  to="/services/$slug"
+                  params={{ slug: s.slug }}
+                  className="text-sm text-ink-foreground/70 transition-colors hover:text-ink-foreground"
+                >
+                  {s.title}
+                </Link>
+              </li>
             ))}
-            <FooterLink to="/services">All services</FooterLink>
+            <li>
+              <Link to="/services" className="text-sm text-ink-foreground/70 transition-colors hover:text-ink-foreground">
+                All services
+              </Link>
+            </li>
           </FooterCol>
 
-          <FooterCol title="Company">
-            <FooterLink to="/about">About us</FooterLink>
-            <FooterLink to="/portfolio">Portfolio</FooterLink>
-            <FooterLink to="/before-after">Before / After</FooterLink>
-            <FooterLink to="/pricing">Pricing</FooterLink>
-            <FooterLink to="/blog">Blog</FooterLink>
-            <FooterLink to="/faq">FAQ</FooterLink>
+          <FooterCol title="Explore">
+            <SimpleLink to="/">Home</SimpleLink>
+            <SimpleLink to="/sample">Sample</SimpleLink>
+            <SimpleLink to="/pricing">Pricing</SimpleLink>
+            <SimpleLink to="/blog">Blog</SimpleLink>
+            <SimpleLink to="/contact">Contact Us</SimpleLink>
           </FooterCol>
 
           <FooterCol title="Get in touch">
-            <FooterLink to="/contact">Contact</FooterLink>
-            <FooterLink to="/quote">Free Quote</FooterLink>
-            <FooterLink to="/quote">Free Trial</FooterLink>
+            <SimpleLink to="/contact">Free Quote</SimpleLink>
             <li>
               <a className="text-sm text-ink-foreground/70 hover:text-ink-foreground" href={`mailto:${BRAND.email}`}>{BRAND.email}</a>
             </li>
@@ -64,8 +71,6 @@ export function Footer() {
         <div className="mt-14 flex flex-col gap-4 border-t border-white/10 pt-6 text-xs text-ink-foreground/60 md:flex-row md:items-center md:justify-between">
           <div>© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</div>
           <div className="flex flex-wrap items-center gap-5">
-            <Link to="/privacy" className="hover:text-ink-foreground">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-ink-foreground">Terms & Conditions</Link>
             <a
               href="https://dynime.com"
               target="_blank"
@@ -96,15 +101,10 @@ function FooterCol({ title, children }: { title: string; children: React.ReactNo
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function FooterLink({ to, params, children }: { to: any; params?: any; children: React.ReactNode }) {
+function SimpleLink({ to, children }: { to: "/" | "/sample" | "/pricing" | "/blog" | "/contact" | "/services"; children: React.ReactNode }) {
   return (
     <li>
-      <Link
-        to={to}
-        params={params}
-        className="text-sm text-ink-foreground/70 transition-colors hover:text-ink-foreground"
-      >
+      <Link to={to} className="text-sm text-ink-foreground/70 transition-colors hover:text-ink-foreground">
         {children}
       </Link>
     </li>
