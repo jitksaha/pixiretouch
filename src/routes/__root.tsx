@@ -78,6 +78,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#0E1116" },
+      { property: "og:title", content: "Pixi Retouch — Premium image editing for ecommerce" },
+      { name: "twitter:title", content: "Pixi Retouch — Premium image editing for ecommerce" },
+      { name: "description", content: "Pixi Retouch Elevation is a premium image editing and retouching agency website." },
+      { property: "og:description", content: "Pixi Retouch Elevation is a premium image editing and retouching agency website." },
+      { name: "twitter:description", content: "Pixi Retouch Elevation is a premium image editing and retouching agency website." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ff7f9299-ba6c-4977-b059-56fdfeafe2bf/id-preview-dd064229--2f2e89f7-8a3c-41e3-a374-6409ca3980a0.lovable.app-1781850496470.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ff7f9299-ba6c-4977-b059-56fdfeafe2bf/id-preview-dd064229--2f2e89f7-8a3c-41e3-a374-6409ca3980a0.lovable.app-1781850496470.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
