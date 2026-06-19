@@ -45,11 +45,11 @@ function Home() {
 
 function Hero() {
   return (
-    <Section className="relative overflow-hidden pt-12 md:pt-16">
+    <Section className="relative flex min-h-[calc(100dvh-4rem)] flex-col justify-center overflow-hidden pt-12 pb-0 md:min-h-[calc(100dvh-5rem)] md:pt-16 md:pb-0">
       <Container className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
         <div className="animate-fade-up">
           <Eyebrow>Image editing studio · Est. since 2014</Eyebrow>
-          <h1 className="mt-5 font-display text-5xl leading-[1.02] md:text-6xl lg:text-7xl">
+          <h1 className="mt-5 font-display text-4xl leading-[1.05] md:text-5xl lg:text-6xl">
             Pixel-perfect retouching for the brands people actually buy from.
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground">
