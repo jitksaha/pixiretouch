@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container } from "./Container";
@@ -35,9 +35,7 @@ const NAV_SERVICES = NAV_SERVICE_SLUGS
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -46,14 +44,6 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const openDropdown = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    setServicesOpen(true);
-  };
-  const closeDropdown = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(() => setServicesOpen(false), 120);
-  };
 
   return (
     <header
@@ -74,9 +64,7 @@ export function Header() {
             n.hasSubmenu ? (
               <div
                 key={n.to}
-                className="relative"
-                onMouseEnter={openDropdown}
-                onMouseLeave={closeDropdown}
+                className="group relative"
               >
                 <Link
                   to={n.to}
@@ -84,46 +72,33 @@ export function Header() {
                   activeProps={{ className: "text-foreground" }}
                 >
                   {n.label}
-                  <ChevronDown
-                    className={cn(
-                      "h-3.5 w-3.5 transition-transform",
-                      servicesOpen && "rotate-180"
-                    )}
-                  />
+                  <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />
                 </Link>
 
-                {servicesOpen && (
-                  <div
-                    className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3"
-                    onMouseEnter={openDropdown}
-                    onMouseLeave={closeDropdown}
-                  >
-                    <div className="w-[420px] rounded-xl border border-border bg-background p-2 shadow-lift">
-                      <div className="grid grid-cols-2 gap-1">
-                        {NAV_SERVICES.map((s) => (
-                          <Link
-                            key={s.slug}
-                            to="/services/$slug"
-                            params={{ slug: s.slug }}
-                            onClick={() => setServicesOpen(false)}
-                            className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                          >
-                            {s.title}
-                          </Link>
-                        ))}
-                      </div>
-                      <div className="mt-1 border-t border-border pt-1">
+                <div className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3 opacity-0 invisible transition-all duration-200 group-hover:opacity-100 group-hover:visible">
+                  <div className="w-[420px] rounded-xl border border-border bg-background p-2 shadow-lift">
+                    <div className="grid grid-cols-2 gap-1">
+                      {NAV_SERVICES.map((s) => (
                         <Link
-                          to="/services"
-                          onClick={() => setServicesOpen(false)}
-                          className="block rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                          key={s.slug}
+                          to="/services/$slug"
+                          params={{ slug: s.slug }}
+                          className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                         >
-                          View all services →
+                          {s.title}
                         </Link>
-                      </div>
+                      ))}
+                    </div>
+                    <div className="mt-1 border-t border-border pt-1">
+                      <Link
+                        to="/services"
+                        className="block rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                      >
+                        View all services →
+                      </Link>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             ) : (
               <Link
