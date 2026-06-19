@@ -76,14 +76,14 @@ export function Header() {
                 </Link>
 
                 <div className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3 opacity-0 invisible transition-all duration-200 group-hover:opacity-100 group-hover:visible">
-                  <div className="w-[420px] rounded-xl border border-border bg-background p-2 shadow-lift">
+                  <div className="min-w-[520px] rounded-xl border border-border bg-background p-2 shadow-lift">
                     <div className="grid grid-cols-2 gap-1">
                       {NAV_SERVICES.map((s) => (
                         <Link
                           key={s.slug}
                           to="/services/$slug"
                           params={{ slug: s.slug }}
-                          className="rounded-md px-3 py-2 text-base text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground whitespace-nowrap"
                         >
                           {s.title}
                         </Link>
@@ -92,7 +92,7 @@ export function Header() {
                     <div className="mt-1 border-t border-border pt-1">
                       <Link
                         to="/services"
-                        className="block rounded-md px-3 py-2 text-base font-medium text-foreground hover:bg-muted"
+                        className="block rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
                       >
                         View all services →
                       </Link>
