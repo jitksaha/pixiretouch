@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container } from "./Container";
 import { Logo } from "./Logo";
+import { TrialDialog } from "./TrialDialog";
 import { BRAND, SERVICES } from "@/content/site";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +12,6 @@ const NAV = [
   { to: "/", label: "Home", hasSubmenu: false },
   { to: "/services", label: "Services", hasSubmenu: true },
   { to: "/sample", label: "Sample", hasSubmenu: false },
-  { to: "/contact", label: "Contact Us", hasSubmenu: false },
   { to: "/pricing", label: "Pricing", hasSubmenu: false },
   { to: "/blog", label: "Blog", hasSubmenu: false },
 ] as const;
