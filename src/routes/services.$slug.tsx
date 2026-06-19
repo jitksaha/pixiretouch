@@ -72,7 +72,7 @@ function ServiceDetail() {
             <h1 className="mt-5 font-display text-5xl md:text-6xl">{service.title}</h1>
             <p className="mt-5 text-lg text-muted-foreground">{service.description}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg"><Link to="/contact" search={{ service: service.slug } as never}>Get a quote <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
+              <Button asChild size="lg"><Link to="/contact">Get a quote <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
               <Button asChild size="lg" variant="outline"><Link to="/sample">See examples</Link></Button>
             </div>
           </div>
