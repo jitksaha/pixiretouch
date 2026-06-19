@@ -45,7 +45,7 @@ function Home() {
 
 function Hero() {
   return (
-    <Section className="relative flex min-h-[calc(100dvh-4rem)] flex-col justify-center overflow-hidden pt-12 pb-0 md:min-h-[calc(100dvh-5rem)] md:pt-16 md:pb-0">
+    <Section className="relative flex min-h-[calc(100dvh-2.75rem)] flex-col justify-center overflow-hidden pt-12 pb-0 md:min-h-[calc(100dvh-3rem)] md:pt-16 md:pb-0">
       <Container className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
         <div className="animate-fade-up">
           <Eyebrow>Image editing studio · Est. since 2014</Eyebrow>
