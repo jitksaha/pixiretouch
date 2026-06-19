@@ -3,6 +3,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
+import { TrialDialog } from "@/components/site/TrialDialog";
 import { SERVICES } from "@/content/site";
 import { serviceImage } from "@/content/serviceImages";
 
@@ -204,7 +205,9 @@ function ServiceDetail() {
         <Container className="text-center">
           <h2 className="mx-auto max-w-3xl font-display text-4xl md:text-5xl">Try {service.title.toLowerCase()} on two free images.</h2>
           <div className="mt-8">
-            <Button asChild size="lg" variant="secondary"><Link to="/contact">Start free trial</Link></Button>
+            <TrialDialog defaultService={service.slug} title={`Try ${service.title.toLowerCase()}`} description="Send up to 2 sample images — we'll edit them free of charge so you can judge the quality.">
+              <Button size="lg" variant="secondary">Start free trial</Button>
+            </TrialDialog>
           </div>
         </Container>
       </Section>
