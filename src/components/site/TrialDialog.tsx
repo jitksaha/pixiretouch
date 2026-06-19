@@ -325,11 +325,30 @@ export function TrialDialog({
                     )}
                   </div>
 
-                  <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                     No card. No commitment. We reply within 45 minutes during working hours.
                   </p>
                 </>
               )}
+
+              <div className="pt-2">
+                <Accordion type="single" collapsible className="rounded-xl border border-border bg-muted/30">
+                  <div className="flex items-center gap-2 px-4 pt-3 pb-1">
+                    <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                      Common questions
+                    </span>
+                  </div>
+                  {FAQS.slice(0, 5).map((faq, i) => (
+                    <AccordionItem key={i} value={`faq-${i}`} className="px-4 border-border">
+                      <AccordionTrigger className="text-xs font-medium py-2.5">{faq.q}</AccordionTrigger>
+                      <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
+                        {faq.a}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
             </div>
 
             <div className="flex items-center justify-between gap-3 border-t border-border bg-muted/30 px-6 py-4">
