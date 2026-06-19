@@ -3,6 +3,7 @@ import { ArrowRight, Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
 import { BeforeAfter } from "@/components/site/BeforeAfter";
+import { TrialDialog } from "@/components/site/TrialDialog";
 import { LogoBar } from "@/components/site/LogoBar";
 import { VideoEmbed } from "@/components/site/VideoEmbed";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -56,9 +57,9 @@ function Hero() {
             Hand-drawn clipping paths, ghost mannequin work, and product retouching for ecommerce teams that care how every SKU looks at 100% zoom.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Button asChild size="lg">
-              <Link to="/contact">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
-            </Button>
+            <TrialDialog>
+              <Button size="lg">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Button>
+            </TrialDialog>
             <Button asChild size="lg" variant="outline">
               <Link to="/sample">See the work</Link>
             </Button>
@@ -359,9 +360,9 @@ function FinalCta() {
           Free trial. No card, no commitment. We deliver the edits within hours.
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-          <Button asChild size="lg" variant="secondary">
-            <Link to="/contact">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Link>
-          </Button>
+          <TrialDialog>
+            <Button size="lg" variant="secondary">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Button>
+          </TrialDialog>
           <Button asChild size="lg" variant="outline" className="border-ink-foreground/30 bg-transparent text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground">
             <Link to="/contact">Talk to the team</Link>
           </Button>

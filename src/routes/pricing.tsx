@@ -1,7 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
+import { TrialDialog } from "@/components/site/TrialDialog";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -86,9 +87,9 @@ function Pricing() {
                   ))}
                 </ul>
                 <div className="mt-10">
-                  <Button asChild className="w-full" variant={t.featured ? "secondary" : "default"}>
-                    <Link to="/contact">{t.cta}</Link>
-                  </Button>
+                  <TrialDialog title={`${t.name} — ${t.cta}`} description="Tell us about your project — we reply within 45 minutes with a firm rate and a free trial edit.">
+                    <Button className="w-full" variant={t.featured ? "secondary" : "default"}>{t.cta}</Button>
+                  </TrialDialog>
                 </div>
               </div>
             ))}
@@ -121,7 +122,11 @@ function Pricing() {
       <Section ink>
         <Container className="text-center">
           <h2 className="mx-auto max-w-3xl font-display text-4xl md:text-5xl">Get an exact per-image rate in 45 minutes.</h2>
-          <div className="mt-8"><Button asChild size="lg" variant="secondary"><Link to="/contact">Get a quote</Link></Button></div>
+          <div className="mt-8">
+            <TrialDialog title="Get a quote" description="Tell us about your project — we reply within 45 minutes with a firm rate and a free trial edit.">
+              <Button size="lg" variant="secondary">Get a quote</Button>
+            </TrialDialog>
+          </div>
         </Container>
       </Section>
     </>

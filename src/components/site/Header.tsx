@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container } from "./Container";
 import { Logo } from "./Logo";
+import { TrialDialog } from "./TrialDialog";
 import { BRAND, SERVICES } from "@/content/site";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +12,6 @@ const NAV = [
   { to: "/", label: "Home", hasSubmenu: false },
   { to: "/services", label: "Services", hasSubmenu: true },
   { to: "/sample", label: "Sample", hasSubmenu: false },
-  { to: "/contact", label: "Contact Us", hasSubmenu: false },
   { to: "/pricing", label: "Pricing", hasSubmenu: false },
   { to: "/blog", label: "Blog", hasSubmenu: false },
 ] as const;
@@ -115,9 +115,9 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <Button asChild size="sm">
-            <Link to="/contact">Get a Quote</Link>
-          </Button>
+          <TrialDialog title="Get a quote" description="Tell us about your project — we reply within 45 minutes with a firm rate and a free trial edit.">
+            <Button size="sm">Get a Quote</Button>
+          </TrialDialog>
         </div>
 
         <button
@@ -183,9 +183,9 @@ export function Header() {
               )
             )}
             <div className="mt-3 pt-3 hairline">
-              <Button asChild className="w-full">
-                <Link to="/contact" onClick={() => setOpen(false)}>Get a Quote</Link>
-              </Button>
+              <TrialDialog title="Get a quote" description="Tell us about your project — we reply within 45 minutes with a firm rate and a free trial edit.">
+                <Button className="w-full" onClick={() => setOpen(false)}>Get a Quote</Button>
+              </TrialDialog>
             </div>
           </Container>
         </div>
