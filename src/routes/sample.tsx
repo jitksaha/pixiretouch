@@ -12,14 +12,14 @@ export const Route = createFileRoute("/sample")({
       { name: "description", content: "Selected before/after retouching work for ecommerce, fashion, jewelry and product brands." },
       { property: "og:title", content: "Portfolio — Pixi Retouch" },
       { property: "og:description", content: "Selected retouching work from the Pixi Retouch studio." },
-      { property: "og:url", content: "/portfolio" },
+      { property: "og:url", content: "/sample" },
     ],
-    links: [{ rel: "canonical", href: "/portfolio" }],
+    links: [{ rel: "canonical", href: "/sample" }],
   }),
   component: Portfolio,
 });
 
-function Portfolio() {
+function Sample() {
   const [cat, setCat] = useState<string>("All");
   const [open, setOpen] = useState<PortfolioItem | null>(null);
   const items = cat === "All" ? PORTFOLIO : PORTFOLIO.filter((p) => p.category === cat);
