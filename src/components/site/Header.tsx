@@ -16,6 +16,22 @@ const NAV = [
   { to: "/blog", label: "Blog", hasSubmenu: false },
 ] as const;
 
+// Curated submenu — only these services appear in the Services dropdown.
+const NAV_SERVICE_SLUGS: { slug: string; label: string }[] = [
+  { slug: "clipping-path", label: "Photoshop Clipping Path" },
+  { slug: "product-photo-retouching", label: "Photo Retouching" },
+  { slug: "shadow-creation", label: "Shadow Creation" },
+  { slug: "background-removal", label: "Background Removing" },
+  { slug: "neck-joint", label: "Neck Joint" },
+  { slug: "ecommerce-image-editing", label: "Ecommerce Image Editing" },
+];
+const NAV_SERVICES = NAV_SERVICE_SLUGS
+  .map((n) => {
+    const s = SERVICES.find((x) => x.slug === n.slug);
+    return s ? { slug: s.slug, title: n.label } : null;
+  })
+  .filter((x): x is { slug: string; title: string } => Boolean(x));
+
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -84,7 +100,7 @@ export function Header() {
                   >
                     <div className="w-[420px] rounded-xl border border-border bg-background p-2 shadow-lift">
                       <div className="grid grid-cols-2 gap-1">
-                        {SERVICES.map((s) => (
+                        {NAV_SERVICES.map((s) => (
                           <Link
                             key={s.slug}
                             to="/services/$slug"
@@ -159,7 +175,7 @@ export function Header() {
                   </button>
                   {mobileServicesOpen && (
                     <div className="ml-3 mt-1 flex flex-col gap-0.5 border-l border-border pl-3">
-                      {SERVICES.map((s) => (
+                      {NAV_SERVICES.map((s) => (
                         <Link
                           key={s.slug}
                           to="/services/$slug"
