@@ -177,6 +177,37 @@ function ServiceDetail() {
         </Container>
       </Section>
 
+      {/* Before / After */}
+      <Section>
+        <Container>
+          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <Eyebrow>See the difference</Eyebrow>
+              <h2 className="mt-4 max-w-2xl font-display text-3xl md:text-4xl">{service.title} — before & after.</h2>
+              <p className="mt-3 max-w-xl text-muted-foreground">Drag the handle, swipe on mobile, or tap the icon to open the full image.</p>
+            </div>
+            <div className="hidden items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground md:flex">
+              <span className="inline-block h-2 w-2 rounded-full bg-primary" />
+              Interactive slider
+            </div>
+          </div>
+          {(() => {
+            const pairs = pairsForService(service.slug);
+            const [hero, ...rest] = pairs;
+            return (
+              <div className="mt-10 grid gap-6 lg:grid-cols-2">
+                <BeforeAfter before={hero.before} after={hero.after} title={hero.title} className="lg:row-span-2" />
+                <div className="grid gap-6">
+                  {rest.map((p) => (
+                    <BeforeAfter key={p.id} before={p.before} after={p.after} title={p.title} />
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+        </Container>
+      </Section>
+
       {/* Included + Industries */}
       <Section>
         <Container className="grid gap-12 lg:grid-cols-2">
