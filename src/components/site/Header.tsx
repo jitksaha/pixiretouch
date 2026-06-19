@@ -115,9 +115,9 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <Button asChild size="sm">
-            <Link to="/contact">Get a Quote</Link>
-          </Button>
+          <TrialDialog title="Get a quote" description="Tell us about your project — we reply within 45 minutes with a firm rate and a free trial edit.">
+            <Button size="sm">Get a Quote</Button>
+          </TrialDialog>
         </div>
 
         <button
