@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
 import { TrialDialog } from "@/components/site/TrialDialog";
-import { SERVICES, PROCESS, TESTIMONIALS } from "@/content/site";
+import { SERVICES, PROCESS, TESTIMONIALS, PORTFOLIO, type PortfolioItem } from "@/content/site";
 import { serviceImage } from "@/content/serviceImages";
+import { BeforeAfter } from "@/components/site/BeforeAfter";
 
 const PROCESS_ICONS = [Send, Sparkles, Upload, FileCheck];
 const FORMATS = ["JPG", "PNG", "TIFF", "PSD", "WEBP", "RAW"];
@@ -15,6 +16,29 @@ const DELIVERABLES = [
   { icon: Shield, title: "Transparent or matte", body: "Clean alpha cutouts, pure-white #FFFFFF, or your branded background." },
   { icon: Sparkles, title: "Color-managed output", body: "sRGB, Adobe RGB or CMYK — soft-proofed for the destination." },
 ];
+
+// Map service slug → portfolio categories that best illustrate it.
+const SLUG_TO_CATEGORIES: Record<string, string[]> = {
+  "clipping-path": ["Clipping Path", "Background Removal"],
+  "background-removal": ["Background Removal", "Clipping Path"],
+  "image-masking": ["Background Removal", "Clipping Path"],
+  "shadow-creation": ["Background Removal", "Clipping Path"],
+  "ghost-mannequin": ["Ghost Mannequin"],
+  "product-photo-retouching": ["Retouching", "Background Removal"],
+  "jewelry-retouching": ["Jewelry", "Retouching"],
+  "ecommerce-image-editing": ["Background Removal", "Clipping Path", "Retouching"],
+  "color-correction": ["Color Correction"],
+  "photo-restoration": ["Retouching"],
+  "photo-manipulation": ["Retouching", "Color Correction"],
+  "neck-joint": ["Ghost Mannequin"],
+  "image-enhancement": ["Retouching", "Color Correction"],
+};
+
+function pairsForService(slug: string): PortfolioItem[] {
+  const cats = SLUG_TO_CATEGORIES[slug] ?? [];
+  const matches = PORTFOLIO.filter((p) => cats.includes(p.category));
+  return (matches.length ? matches : PORTFOLIO).slice(0, 3);
+}
 
 export const Route = createFileRoute("/services/$slug")({
   loader: ({ params }) => {
@@ -150,6 +174,37 @@ function ServiceDetail() {
               </div>
             ))}
           </div>
+        </Container>
+      </Section>
+
+      {/* Before / After */}
+      <Section>
+        <Container>
+          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <Eyebrow>See the difference</Eyebrow>
+              <h2 className="mt-4 max-w-2xl font-display text-3xl md:text-4xl">{service.title} — before & after.</h2>
+              <p className="mt-3 max-w-xl text-muted-foreground">Drag the handle, swipe on mobile, or tap the icon to open the full image.</p>
+            </div>
+            <div className="hidden items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground md:flex">
+              <span className="inline-block h-2 w-2 rounded-full bg-primary" />
+              Interactive slider
+            </div>
+          </div>
+          {(() => {
+            const pairs = pairsForService(service.slug);
+            const [hero, ...rest] = pairs;
+            return (
+              <div className="mt-10 grid gap-6 lg:grid-cols-2">
+                <BeforeAfter before={hero.before} after={hero.after} title={hero.title} className="lg:row-span-2" />
+                <div className="grid gap-6">
+                  {rest.map((p) => (
+                    <BeforeAfter key={p.id} before={p.before} after={p.after} title={p.title} />
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
         </Container>
       </Section>
 
