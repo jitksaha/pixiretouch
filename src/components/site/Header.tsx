@@ -46,14 +46,6 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const openDropdown = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    setServicesOpen(true);
-  };
-  const closeDropdown = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(() => setServicesOpen(false), 120);
-  };
 
   return (
     <header
