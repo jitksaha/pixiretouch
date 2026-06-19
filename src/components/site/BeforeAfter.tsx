@@ -53,7 +53,7 @@ export function BeforeAfter({ pair, before, after, title, className, initial = 5
             <X className="h-5 w-5" />
           </button>
           <div className="overflow-hidden rounded-xl bg-background">
-            <Slider pos={pos} setPos={setPos} pair={pair} tall />
+            <Slider pos={pos} setPos={setPos} pair={resolved} tall />
           </div>
         </DialogContent>
       </Dialog>
