@@ -88,7 +88,9 @@ function ServiceDetail() {
               <h1 className="mt-5 font-display text-5xl leading-[1.05] md:text-6xl">{service.title}</h1>
               <p className="mt-5 max-w-xl text-lg text-muted-foreground">{service.description}</p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button asChild size="lg"><Link to="/contact">Get a quote <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
+                <TrialDialog defaultService={service.slug} title={`${service.title} — Get a quote`} description="Tell us about your project — we reply within 45 minutes with a firm rate and a free trial edit.">
+                  <Button size="lg">Get a quote <ArrowRight className="ml-1 h-4 w-4" /></Button>
+                </TrialDialog>
                 <Button asChild size="lg" variant="outline"><Link to="/sample">See examples</Link></Button>
               </div>
             </div>
