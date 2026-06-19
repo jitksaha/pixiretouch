@@ -20,14 +20,14 @@ const LOGOS = [
 
 export function LogoBar() {
   return (
-    <div className="grid grid-cols-2 items-center gap-x-8 gap-y-6 sm:grid-cols-4 lg:grid-cols-8">
+    <div className="grid grid-cols-2 items-center gap-x-6 gap-y-4 px-2 sm:grid-cols-4 lg:grid-cols-8">
       {LOGOS.map((logo) => (
-        <div key={logo.name} className="flex items-center justify-center px-2">
+        <div key={logo.name} className="flex items-center justify-center px-3 py-1">
           <img
             src={logo.src}
             alt={logo.name}
             loading="lazy"
-            className="h-10 w-auto object-contain grayscale opacity-60 transition duration-300 hover:opacity-100 hover:grayscale-0"
+            className="h-12 w-auto object-contain grayscale opacity-60 transition duration-300 hover:opacity-100 hover:grayscale-0 sm:h-14"
           />
         </div>
       ))}
