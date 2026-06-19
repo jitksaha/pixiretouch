@@ -3,8 +3,8 @@ import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
-import { BeforeAfter } from "@/components/site/BeforeAfter";
-import { SERVICES, PORTFOLIO } from "@/content/site";
+import { SERVICES } from "@/content/site";
+import { serviceImage } from "@/content/serviceImages";
 
 export const Route = createFileRoute("/services/$slug")({
   loader: ({ params }) => {
@@ -15,6 +15,7 @@ export const Route = createFileRoute("/services/$slug")({
   head: ({ loaderData }) => {
     const s = loaderData;
     if (!s) return { meta: [] };
+    const hero = serviceImage(s.slug);
     return {
       meta: [
         { title: `${s.title} — Pixi Retouch` },
@@ -22,6 +23,8 @@ export const Route = createFileRoute("/services/$slug")({
         { property: "og:title", content: `${s.title} — Pixi Retouch` },
         { property: "og:description", content: s.short },
         { property: "og:url", content: `/services/${s.slug}` },
+        { property: "og:image", content: hero },
+        { name: "twitter:image", content: hero },
       ],
       links: [{ rel: "canonical", href: `/services/${s.slug}` }],
       scripts: [
@@ -32,6 +35,7 @@ export const Route = createFileRoute("/services/$slug")({
             "@type": "Service",
             name: s.title,
             description: s.description,
+            image: hero,
             provider: { "@type": "Organization", name: "Pixi Retouch" },
           }),
         },
@@ -61,29 +65,61 @@ export const Route = createFileRoute("/services/$slug")({
 function ServiceDetail() {
   const service = Route.useLoaderData();
   const related = SERVICES.filter((s) => s.slug !== service.slug).slice(0, 3);
-  const samples = PORTFOLIO.slice(0, 3);
+  const hero = serviceImage(service.slug);
+  const idx = SERVICES.findIndex((s) => s.slug === service.slug);
+  const num = String(idx + 1).padStart(2, "0");
 
   return (
     <>
-      <Section className="pt-20 md:pt-28">
-        <Container className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-          <div>
-            <Link to="/services" className="text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground">← All services</Link>
-            <h1 className="mt-5 font-display text-5xl md:text-6xl">{service.title}</h1>
-            <p className="mt-5 text-lg text-muted-foreground">{service.description}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg"><Link to="/contact">Get a quote <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
-              <Button asChild size="lg" variant="outline"><Link to="/sample">See examples</Link></Button>
+      {/* Hero */}
+      <Section className="pt-16 md:pt-20">
+        <Container>
+          <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+            <div>
+              <Link to="/services" className="font-mono text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground">
+                ← All services
+              </Link>
+              <div className="mt-6 flex items-center gap-3">
+                <span className="font-mono text-xs font-semibold text-primary">{num}</span>
+                <span className="h-px w-8 bg-border" />
+                <Eyebrow className="!mt-0">Service</Eyebrow>
+              </div>
+              <h1 className="mt-5 font-display text-5xl leading-[1.05] md:text-6xl">{service.title}</h1>
+              <p className="mt-5 max-w-xl text-lg text-muted-foreground">{service.description}</p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button asChild size="lg"><Link to="/contact">Get a quote <ArrowRight className="ml-1 h-4 w-4" /></Link></Button>
+                <Button asChild size="lg" variant="outline"><Link to="/sample">See examples</Link></Button>
+              </div>
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-muted/40">
+              <img
+                src={hero}
+                alt={service.title}
+                width={1024}
+                height={768}
+                className="h-full w-full object-cover"
+              />
+              <svg
+                aria-hidden
+                className="pointer-events-none absolute inset-0 h-full w-full p-6 opacity-40"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              >
+                <path d="M6,6 L94,6 L94,94 L6,94 Z" fill="none" stroke="hsl(var(--primary))" strokeWidth="0.3" strokeDasharray="1.5" />
+                <circle cx="6" cy="6" r="0.9" fill="hsl(var(--primary))" />
+                <circle cx="94" cy="6" r="0.9" fill="hsl(var(--primary))" />
+                <circle cx="94" cy="94" r="0.9" fill="hsl(var(--primary))" />
+                <circle cx="6" cy="94" r="0.9" fill="hsl(var(--primary))" />
+              </svg>
+              <span className="absolute bottom-4 right-4 bg-ink px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-tighter text-ink-foreground">
+                {service.title}
+              </span>
             </div>
           </div>
-          <BeforeAfter
-            before={samples[0].before}
-            after={samples[0].after}
-            className="shadow-lift"
-          />
         </Container>
       </Section>
 
+      {/* Included + Industries */}
       <Section>
         <Container className="grid gap-12 lg:grid-cols-2">
           <div>
@@ -114,6 +150,7 @@ function ServiceDetail() {
         </Container>
       </Section>
 
+      {/* FAQ */}
       {service.faqs.length > 0 && (
         <Section className="bg-muted/30">
           <Container className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
@@ -133,14 +170,30 @@ function ServiceDetail() {
         </Section>
       )}
 
+      {/* Related — image cards */}
       <Section>
         <Container>
           <Eyebrow>Related services</Eyebrow>
-          <div className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-3">
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
             {related.map((s) => (
-              <Link key={s.slug} to="/services/$slug" params={{ slug: s.slug }} className="bg-background p-7 transition hover:bg-muted/40">
-                <h3 className="font-display text-2xl">{s.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{s.short}</p>
+              <Link
+                key={s.slug}
+                to="/services/$slug"
+                params={{ slug: s.slug }}
+                className="group overflow-hidden rounded-2xl border border-border bg-background transition hover:shadow-lift"
+              >
+                <div className="aspect-[4/3] overflow-hidden bg-muted/40">
+                  <img
+                    src={serviceImage(s.slug)}
+                    alt={s.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="font-display text-2xl">{s.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{s.short}</p>
+                </div>
               </Link>
             ))}
           </div>
