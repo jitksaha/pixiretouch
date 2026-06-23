@@ -128,7 +128,7 @@ export function TrialDialog({
       }}
     >
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[560px] p-0 overflow-hidden rounded-2xl shadow-2xl max-h-[calc(100vh-5rem)] overflow-y-auto border-border/60">
+      <DialogContent className="sm:max-w-[560px] p-0 rounded-2xl shadow-2xl border-border/60 max-h-[calc(100vh-5rem)] flex flex-col overflow-hidden">
         {done ? (
           <div className="p-8 text-center">
             <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary/10 text-primary">
@@ -146,7 +146,7 @@ export function TrialDialog({
           </div>
         ) : (
           <>
-            <div className="border-b border-border p-6">
+            <div className="border-b border-border px-6 pt-6 pb-4 shrink-0">
               <DialogHeader>
                 <DialogTitle className="font-display text-2xl">{title}</DialogTitle>
                 <DialogDescription>{description}</DialogDescription>
@@ -181,7 +181,7 @@ export function TrialDialog({
               </div>
             </div>
 
-            <div className="px-6 py-6 space-y-5">
+            <div className="px-6 py-5 space-y-4 overflow-y-auto flex-1 min-h-0">
               {step === 0 && (
                 <>
                   <div className="space-y-2">
@@ -291,9 +291,11 @@ export function TrialDialog({
                       </Label>
                       <Input
                         id="t-name"
+                        placeholder="Jane Doe"
                         value={form.name}
                         onChange={(e) => set("name", e.target.value)}
                       />
+
                       {errors.name && (
                         <p className="text-xs text-destructive">{errors.name}</p>
                       )}
@@ -304,9 +306,11 @@ export function TrialDialog({
                       </Label>
                       <Input
                         id="t-company"
+                        placeholder="Acme Studio"
                         value={form.company}
                         onChange={(e) => set("company", e.target.value)}
                       />
+
                     </div>
                   </div>
 
@@ -317,9 +321,11 @@ export function TrialDialog({
                     <Input
                       id="t-email"
                       type="email"
+                      placeholder="you@company.com"
                       value={form.email}
                       onChange={(e) => set("email", e.target.value)}
                     />
+
                     {errors.email && (
                       <p className="text-xs text-destructive">{errors.email}</p>
                     )}
@@ -351,7 +357,7 @@ export function TrialDialog({
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-3 border-t border-border bg-muted/30 px-6 py-4">
+            <div className="flex items-center justify-between gap-3 border-t border-border bg-muted/30 px-6 py-4 shrink-0">
               <Button
                 type="button"
                 variant="ghost"
