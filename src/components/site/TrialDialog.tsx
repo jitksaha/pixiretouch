@@ -146,7 +146,7 @@ export function TrialDialog({
           </div>
         ) : (
           <>
-            <div className="border-b border-border p-6">
+            <div className="border-b border-border px-6 pt-6 pb-4 shrink-0">
               <DialogHeader>
                 <DialogTitle className="font-display text-2xl">{title}</DialogTitle>
                 <DialogDescription>{description}</DialogDescription>
