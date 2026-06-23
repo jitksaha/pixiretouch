@@ -306,9 +306,11 @@ export function TrialDialog({
                       </Label>
                       <Input
                         id="t-company"
+                        placeholder="Acme Studio"
                         value={form.company}
                         onChange={(e) => set("company", e.target.value)}
                       />
+
                     </div>
                   </div>
 
