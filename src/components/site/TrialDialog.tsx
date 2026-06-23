@@ -321,9 +321,11 @@ export function TrialDialog({
                     <Input
                       id="t-email"
                       type="email"
+                      placeholder="you@company.com"
                       value={form.email}
                       onChange={(e) => set("email", e.target.value)}
                     />
+
                     {errors.email && (
                       <p className="text-xs text-destructive">{errors.email}</p>
                     )}
