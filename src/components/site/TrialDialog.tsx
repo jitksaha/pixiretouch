@@ -128,7 +128,7 @@ export function TrialDialog({
       }}
     >
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[560px] p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[560px] p-0 overflow-hidden rounded-2xl shadow-2xl my-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
         {done ? (
           <div className="p-8 text-center">
             <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary/10 text-primary">
