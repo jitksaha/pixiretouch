@@ -152,29 +152,31 @@ export function TrialDialog({
                 <DialogDescription>{description}</DialogDescription>
               </DialogHeader>
 
-              <div className="mt-5 flex items-center gap-2">
+              <div className="mt-5 flex items-center w-full">
                 {STEPS.map((label, i) => (
-                  <div key={label} className="flex flex-1 items-center gap-2">
-                    <div
-                      className={cn(
-                        "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-medium",
-                        i < step && "border-primary bg-primary text-primary-foreground",
-                        i === step && "border-foreground bg-foreground text-background",
-                        i > step && "border-border text-muted-foreground",
-                      )}
-                    >
-                      {i < step ? <Check className="h-3.5 w-3.5" /> : i + 1}
+                  <div key={label} className={cn("flex items-center min-w-0", i < STEPS.length - 1 ? "flex-1" : "flex-none")}>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div
+                        className={cn(
+                          "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-medium",
+                          i < step && "border-primary bg-primary text-primary-foreground",
+                          i === step && "border-foreground bg-foreground text-background",
+                          i > step && "border-border text-muted-foreground",
+                        )}
+                      >
+                        {i < step ? <Check className="h-3.5 w-3.5" /> : i + 1}
+                      </div>
+                      <span
+                        className={cn(
+                          "text-xs uppercase tracking-wider truncate",
+                          i === step ? "text-foreground" : "text-muted-foreground",
+                        )}
+                      >
+                        {label}
+                      </span>
                     </div>
-                    <span
-                      className={cn(
-                        "text-xs uppercase tracking-wider",
-                        i === step ? "text-foreground" : "text-muted-foreground",
-                      )}
-                    >
-                      {label}
-                    </span>
                     {i < STEPS.length - 1 && (
-                      <div className="ml-1 h-px flex-1 bg-border" />
+                      <div className="mx-3 h-px flex-1 bg-border" />
                     )}
                   </div>
                 ))}
@@ -345,8 +347,8 @@ export function TrialDialog({
                       Common questions
                     </span>
                   </div>
-                  {FAQS.slice(0, 5).map((faq, i) => (
-                    <AccordionItem key={i} value={`faq-${i}`} className="px-4 border-border">
+                  {FAQS.slice(step * 2, step * 2 + 2).map((faq, i) => (
+                    <AccordionItem key={i} value={`faq-${step}-${i}`} className="px-4 border-border">
                       <AccordionTrigger className="text-xs font-medium py-2.5">{faq.q}</AccordionTrigger>
                       <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                         {faq.a}
