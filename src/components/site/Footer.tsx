@@ -151,11 +151,11 @@ export function Footer() {
         </div>
 
         {/* Giant brand wordmark */}
-        <div className="relative overflow-hidden px-4 pt-6 pb-2 md:px-8">
+        <div className="relative overflow-hidden px-4 pt-4 pb-3 md:px-8">
           <h2
             aria-hidden="true"
-            className="select-none text-center font-display font-bold leading-[0.85] tracking-tighter text-ink-foreground/[0.06]"
-            style={{ fontSize: "clamp(4rem, 22vw, 22rem)" }}
+            className="select-none whitespace-nowrap text-center font-bold italic leading-[0.9] tracking-tight text-ink-foreground/[0.07]"
+            style={{ fontFamily: "'Italiana', serif", fontSize: "clamp(3rem, 14vw, 12rem)", letterSpacing: "0.02em" }}
           >
             {BRAND.name}
           </h2>
