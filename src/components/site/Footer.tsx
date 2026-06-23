@@ -1,112 +1,172 @@
 import { Link } from "@tanstack/react-router";
-import { Container } from "./Container";
+import { ArrowRight } from "lucide-react";
 import { BRAND, SERVICES } from "@/content/site";
 import { Logo } from "./Logo";
 import dynimeLogoAsset from "@/assets/dynime-logo.svg.asset.json";
 
 export function Footer() {
   return (
-    <footer className="ink-section">
-      <Container className="pt-10 pb-6 md:pt-12 md:pb-6">
-        <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <div>
-            <Link to="/" aria-label={BRAND.name} className="inline-flex">
-              <Logo variant="dark" size="lg" />
-            </Link>
-            <p className="mt-3 max-w-sm text-sm text-ink-foreground/70">
-              {BRAND.description}
-            </p>
-            <p className="mt-3 text-sm text-ink-foreground/60">
-              Part of the{" "}
-              <a
-                href={BRAND.parentBrand.url}
-                target="_blank"
-                rel="noreferrer"
-                className="text-ink-foreground underline-offset-4 hover:underline"
-              >
-                {BRAND.parentBrand.name}
-              </a>{" "}
-              family of creative brands.
-            </p>
-          </div>
-
-          <FooterCol title="Services">
-            {SERVICES.slice(0, 7).map((s) => (
-              <li key={s.slug}>
-                <Link
-                  to="/services/$slug"
-                  params={{ slug: s.slug }}
-                  className="text-sm text-ink-foreground/70 transition-colors hover:text-ink-foreground"
-                >
-                  {s.title}
+    <footer className="ink-section px-4 py-8 md:px-8 md:py-10">
+      <div className="mx-auto w-full max-w-7xl overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] shadow-2xl">
+        {/* Main grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12">
+          {/* Brand */}
+          <div className="md:col-span-4 border-b border-white/5 p-8 md:border-b-0 md:border-r md:p-10">
+            <div className="flex h-full flex-col justify-between gap-8">
+              <div>
+                <Link to="/" aria-label={BRAND.name} className="inline-flex">
+                  <Logo variant="dark" size="lg" />
                 </Link>
-              </li>
-            ))}
-            <li>
-              <Link to="/services" className="text-sm text-ink-foreground/70 transition-colors hover:text-ink-foreground">
-                All services
-              </Link>
-            </li>
-          </FooterCol>
+                <p className="mt-5 max-w-xs text-sm leading-relaxed text-ink-foreground/60">
+                  {BRAND.description}
+                </p>
+              </div>
 
-          <FooterCol title="Explore">
-            <SimpleLink to="/">Home</SimpleLink>
-            <SimpleLink to="/sample">Sample</SimpleLink>
-            <SimpleLink to="/pricing">Pricing</SimpleLink>
-            <SimpleLink to="/blog">Blog</SimpleLink>
-            <SimpleLink to="/contact">Contact Us</SimpleLink>
-          </FooterCol>
+              <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+                </span>
+                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-ink-foreground/50">
+                  Part of the{" "}
+                  <a
+                    href={BRAND.parentBrand.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-ink-foreground/80 hover:text-ink-foreground"
+                  >
+                    {BRAND.parentBrand.name}
+                  </a>{" "}
+                  family
+                </span>
+              </div>
+            </div>
+          </div>
 
-          <FooterCol title="Get in touch">
-            <SimpleLink to="/contact">Free Quote</SimpleLink>
-            <li>
-              <a className="text-sm text-ink-foreground/70 hover:text-ink-foreground" href={`mailto:${BRAND.email}`}>{BRAND.email}</a>
-            </li>
-            <li>
-              <a className="text-sm text-ink-foreground/70 hover:text-ink-foreground" href={BRAND.whatsappLink}>WhatsApp: {BRAND.whatsapp}</a>
-            </li>
-          </FooterCol>
-        </div>
+          {/* Link columns */}
+          <div className="md:col-span-8 grid grid-cols-2 gap-px bg-white/5 lg:grid-cols-3">
+            {/* Services */}
+            <div className="bg-ink p-8 md:p-10">
+              <h4 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                Services
+              </h4>
+              <ul className="space-y-3">
+                {SERVICES.slice(0, 7).map((s) => (
+                  <li key={s.slug}>
+                    <Link
+                      to="/services/$slug"
+                      params={{ slug: s.slug }}
+                      className="text-sm text-ink-foreground/60 transition-colors hover:text-ink-foreground"
+                    >
+                      {s.title}
+                    </Link>
+                  </li>
+                ))}
+                <li className="pt-2">
+                  <Link
+                    to="/services"
+                    className="group inline-flex items-center gap-2 text-sm font-medium text-ink-foreground"
+                  >
+                    All services
+                    <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
-        <div className="mt-8 border-t border-white/15" />
+            {/* Explore */}
+            <div className="bg-ink p-8 md:p-10">
+              <h4 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                Explore
+              </h4>
+              <ul className="space-y-3">
+                <SimpleLink to="/">Home</SimpleLink>
+                <SimpleLink to="/sample">Sample</SimpleLink>
+                <SimpleLink to="/pricing">Pricing</SimpleLink>
+                <SimpleLink to="/blog">Blog</SimpleLink>
+                <SimpleLink to="/contact">Contact Us</SimpleLink>
+              </ul>
+            </div>
 
-        <div className="mt-4 flex flex-col gap-3 pt-2 text-xs text-ink-foreground/60 md:flex-row md:items-center md:justify-between">
-          <div>© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</div>
-          <div className="flex flex-wrap items-center gap-5">
-            <a
-              href="https://dynime.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 hover:text-ink-foreground"
-            >
-              Crafted by
-              <img
-                src={dynimeLogoAsset.url}
-                alt="dynime"
-                className="h-5 w-auto opacity-80 hover:opacity-100 transition-opacity"
-                loading="lazy"
-              />
-            </a>
+            {/* Get in touch */}
+            <div className="col-span-2 border-t border-white/5 bg-ink p-8 md:p-10 lg:col-span-1 lg:border-t-0">
+              <h4 className="mb-6 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                Get in touch
+              </h4>
+              <div className="space-y-6">
+                <Link
+                  to="/contact"
+                  className="block w-full rounded-lg bg-primary py-3 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  Free Quote
+                </Link>
+                <div className="space-y-4">
+                  <div>
+                    <span className="mb-1 block text-[10px] uppercase tracking-widest text-ink-foreground/40">
+                      Email
+                    </span>
+                    <a
+                      href={`mailto:${BRAND.email}`}
+                      className="text-sm text-ink-foreground transition-colors hover:text-primary"
+                    >
+                      {BRAND.email}
+                    </a>
+                  </div>
+                  <div>
+                    <span className="mb-1 block text-[10px] uppercase tracking-widest text-ink-foreground/40">
+                      WhatsApp
+                    </span>
+                    <a
+                      href={BRAND.whatsappLink}
+                      className="text-sm text-ink-foreground transition-colors hover:text-primary"
+                    >
+                      {BRAND.whatsapp}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </Container>
+
+        {/* Bottom bar */}
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-white/5 bg-black/30 px-8 py-5 md:flex-row md:px-10">
+          <div className="text-xs text-ink-foreground/50">
+            © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
+          </div>
+          <a
+            href="https://dynime.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2 text-xs text-ink-foreground/50 transition-colors hover:text-ink-foreground"
+          >
+            Crafted by
+            <img
+              src={dynimeLogoAsset.url}
+              alt="dynime"
+              className="h-4 w-auto opacity-70 transition-opacity group-hover:opacity-100"
+              loading="lazy"
+            />
+          </a>
+        </div>
+      </div>
     </footer>
   );
 }
 
-function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h3 className="font-display text-sm uppercase tracking-[0.16em] text-ink-foreground/60">{title}</h3>
-      <ul className="mt-3 space-y-2">{children}</ul>
-    </div>
-  );
-}
-
-function SimpleLink({ to, children }: { to: "/" | "/sample" | "/pricing" | "/blog" | "/contact" | "/services"; children: React.ReactNode }) {
+function SimpleLink({
+  to,
+  children,
+}: {
+  to: "/" | "/sample" | "/pricing" | "/blog" | "/contact" | "/services";
+  children: React.ReactNode;
+}) {
   return (
     <li>
-      <Link to={to} className="text-sm text-ink-foreground/70 transition-colors hover:text-ink-foreground">
+      <Link
+        to={to}
+        className="text-sm text-ink-foreground/60 transition-colors hover:text-ink-foreground"
+      >
         {children}
       </Link>
     </li>
