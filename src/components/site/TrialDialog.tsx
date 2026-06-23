@@ -291,9 +291,11 @@ export function TrialDialog({
                       </Label>
                       <Input
                         id="t-name"
+                        placeholder="Jane Doe"
                         value={form.name}
                         onChange={(e) => set("name", e.target.value)}
                       />
+
                       {errors.name && (
                         <p className="text-xs text-destructive">{errors.name}</p>
                       )}
