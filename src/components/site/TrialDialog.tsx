@@ -347,8 +347,8 @@ export function TrialDialog({
                       Common questions
                     </span>
                   </div>
-                  {FAQS.slice(0, 5).map((faq, i) => (
-                    <AccordionItem key={i} value={`faq-${i}`} className="px-4 border-border">
+                  {FAQS.slice(step * 2, step * 2 + 2).map((faq, i) => (
+                    <AccordionItem key={i} value={`faq-${step}-${i}`} className="px-4 border-border">
                       <AccordionTrigger className="text-xs font-medium py-2.5">{faq.q}</AccordionTrigger>
                       <AccordionContent className="text-xs text-muted-foreground leading-relaxed">
                         {faq.a}
