@@ -357,7 +357,7 @@ export function TrialDialog({
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-3 border-t border-border bg-muted/30 px-6 py-4">
+            <div className="flex items-center justify-between gap-3 border-t border-border bg-muted/30 px-6 py-4 shrink-0">
               <Button
                 type="button"
                 variant="ghost"
