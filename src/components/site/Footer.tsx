@@ -98,7 +98,7 @@ function FooterCol({ title, children }: { title: string; children: React.ReactNo
   return (
     <div>
       <h3 className="font-display text-sm uppercase tracking-[0.16em] text-ink-foreground/60">{title}</h3>
-      <ul className="mt-5 space-y-3">{children}</ul>
+      <ul className="mt-3 space-y-2">{children}</ul>
     </div>
   );
 }
