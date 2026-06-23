@@ -351,15 +351,15 @@ function FaqSection() {
 
 function FinalCta() {
   return (
-    <Section ink className="py-24 md:py-32">
+    <Section ink className="py-12 md:py-16">
       <Container className="text-center">
-        <h2 className="mx-auto max-w-3xl font-display text-4xl md:text-6xl">
+        <h2 className="mx-auto max-w-3xl font-display text-3xl md:text-5xl">
           Send two images. Judge the work for yourself.
         </h2>
-        <p className="mx-auto mt-5 max-w-xl text-ink-foreground/70">
+        <p className="mx-auto mt-3 max-w-xl text-sm text-ink-foreground/70 md:text-base">
           Free trial. No card, no commitment. We deliver the edits within hours.
         </p>
-        <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <TrialDialog>
             <Button size="lg" variant="secondary">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Button>
           </TrialDialog>
