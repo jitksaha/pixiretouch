@@ -57,8 +57,8 @@
   --popover: oklch(1 0 0);
   --popover-foreground: var(--foreground);
 
-  /* Primary = electric blue accent */
-  --primary: oklch(0.55 0.22 264);            /* #2D5BFF-ish */
+  /* Primary = rose gold / copper (matches logo) */
+  --primary: oklch(0.62 0.11 40);             /* ~#B87355 rose copper */
   --primary-foreground: oklch(0.99 0 0);
 
   --secondary: oklch(0.95 0.008 85);
