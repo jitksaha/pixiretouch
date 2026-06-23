@@ -7,16 +7,16 @@ import dynimeLogoAsset from "@/assets/dynime-logo.svg.asset.json";
 export function Footer() {
   return (
     <footer className="ink-section">
-      <Container className="py-16 md:py-20">
-        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <Container className="pt-10 pb-6 md:pt-12 md:pb-6">
+        <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <Link to="/" aria-label={BRAND.name} className="inline-flex">
               <Logo variant="dark" size="lg" />
             </Link>
-            <p className="mt-4 max-w-sm text-sm text-ink-foreground/70">
+            <p className="mt-3 max-w-sm text-sm text-ink-foreground/70">
               {BRAND.description}
             </p>
-            <p className="mt-6 text-sm text-ink-foreground/60">
+            <p className="mt-3 text-sm text-ink-foreground/60">
               Part of the{" "}
               <a
                 href={BRAND.parentBrand.url}
@@ -68,7 +68,9 @@ export function Footer() {
           </FooterCol>
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 border-t border-white/10 pt-6 text-xs text-ink-foreground/60 md:flex-row md:items-center md:justify-between">
+        <div className="mt-8 border-t border-white/15" />
+
+        <div className="mt-4 flex flex-col gap-3 pt-2 text-xs text-ink-foreground/60 md:flex-row md:items-center md:justify-between">
           <div>© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</div>
           <div className="flex flex-wrap items-center gap-5">
             <a
@@ -96,7 +98,7 @@ function FooterCol({ title, children }: { title: string; children: React.ReactNo
   return (
     <div>
       <h3 className="font-display text-sm uppercase tracking-[0.16em] text-ink-foreground/60">{title}</h3>
-      <ul className="mt-5 space-y-3">{children}</ul>
+      <ul className="mt-3 space-y-2">{children}</ul>
     </div>
   );
 }
