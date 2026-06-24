@@ -24,7 +24,12 @@ export const Route = createFileRoute("/sample")({
 function Sample() {
   const [cat, setCat] = useState<string>("All");
   const [open, setOpen] = useState<PortfolioItem | null>(null);
-  const items = cat === "All" ? PORTFOLIO : PORTFOLIO.filter((p) => p.category === cat);
+  const { items: all } = useDynamicPortfolio();
+  const items = useMemo(
+    () => (cat === "All" ? all : all.filter((p) => p.category === cat)),
+    [cat, all],
+  );
+
 
   return (
     <>
