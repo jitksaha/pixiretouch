@@ -40,6 +40,7 @@ import {
   Sparkles,
   ShieldCheck,
   ChevronDown,
+  BarChart3,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -58,6 +59,7 @@ const primaryNav: NavItem[] = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/quotes", label: "Quote requests", icon: Inbox, badgeKey: "quotes" },
   { to: "/admin/messages", label: "Messages", icon: MessageSquare, badgeKey: "messages" },
+  { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
 const contentNav: NavItem[] = [
@@ -68,12 +70,14 @@ const contentNav: NavItem[] = [
 
 const titleByPath: Record<string, { title: string; subtitle: string }> = {
   "/admin": { title: "Overview", subtitle: "Studio activity at a glance" },
-  "/admin/quotes": { title: "Quote requests", subtitle: "Incoming briefs from prospects" },
-  "/admin/messages": { title: "Messages", subtitle: "Contact form conversations" },
+  "/admin/quotes": { title: "Quote requests", subtitle: "Search, filter and manage incoming briefs" },
+  "/admin/messages": { title: "Messages", subtitle: "Inbox, threading and replies" },
+  "/admin/analytics": { title: "Analytics", subtitle: "Funnels, growth and CSV exports" },
   "/admin/blog": { title: "Blog", subtitle: "Stories, tutorials and announcements" },
   "/admin/portfolio": { title: "Portfolio", subtitle: "Before / after case studies" },
   "/admin/services": { title: "Services", subtitle: "Page content overrides" },
 };
+
 
 function AdminLayout() {
   const navigate = useNavigate();
