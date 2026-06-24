@@ -41,6 +41,7 @@ import {
   ShieldCheck,
   ChevronDown,
   BarChart3,
+  Library,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
