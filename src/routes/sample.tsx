@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { PORTFOLIO, PORTFOLIO_CATEGORIES, type PortfolioItem } from "@/content/site";
+import { PORTFOLIO_CATEGORIES, type PortfolioItem } from "@/content/site";
+import { useDynamicPortfolio } from "@/lib/dynamic-content";
+
 
 export const Route = createFileRoute("/sample")({
   head: () => ({

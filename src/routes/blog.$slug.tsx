@@ -1,17 +1,18 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Container, Section } from "@/components/site/Container";
 import { Button } from "@/components/ui/button";
 import { BLOG } from "@/content/site";
+import { useDynamicBlog, useDynamicBlogPost } from "@/lib/dynamic-content";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
-    const post = BLOG.find((p) => p.slug === params.slug);
-    if (!post) throw notFound();
-    return post;
-  },
-  head: ({ loaderData, params }) => {
-    const p = loaderData;
-    if (!p) return { meta: [] };
+  head: ({ params }) => {
+    const p = BLOG.find((b) => b.slug === params.slug);
+    if (!p) {
+      return {
+        meta: [{ title: "Post — Pixi Retouch" }],
+        links: [{ rel: "canonical", href: `/blog/${params.slug}` }],
+      };
+    }
     return {
       meta: [
         { title: `${p.title} — Pixi Retouch` },
@@ -23,29 +24,37 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:url", content: `/blog/${params.slug}` },
       ],
       links: [{ rel: "canonical", href: `/blog/${params.slug}` }],
-      scripts: [{
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Article",
-          headline: p.title,
-          description: p.excerpt,
-          datePublished: p.date,
-          author: { "@type": "Organization", name: p.author },
-          image: p.cover,
-        }),
-      }],
     };
   },
   component: Post,
-  notFoundComponent: () => (
-    <Section><Container><h1 className="font-display text-4xl">Post not found</h1><Link to="/blog" className="mt-4 inline-block underline">Back to blog</Link></Container></Section>
-  ),
 });
 
 function Post() {
-  const p = Route.useLoaderData();
-  const related = BLOG.filter((b) => b.slug !== p.slug).slice(0, 3);
+  const { slug } = Route.useParams();
+  const { post: p, ready } = useDynamicBlogPost(slug);
+  const { posts } = useDynamicBlog();
+
+  if (!p) {
+    if (!ready) {
+      return (
+        <Section>
+          <Container>
+            <p className="text-sm text-muted-foreground">Loading…</p>
+          </Container>
+        </Section>
+      );
+    }
+    return (
+      <Section>
+        <Container>
+          <h1 className="font-display text-4xl">Post not found</h1>
+          <Link to="/blog" className="mt-4 inline-block underline">Back to blog</Link>
+        </Container>
+      </Section>
+    );
+  }
+
+  const related = posts.filter((b) => b.slug !== p.slug).slice(0, 3);
 
   return (
     <>
@@ -56,7 +65,7 @@ function Post() {
             {p.category} · <time>{new Date(p.date).toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric" })}</time>
           </div>
           <h1 className="mt-4 font-display text-4xl md:text-6xl">{p.title}</h1>
-          <p className="mt-5 text-lg text-muted-foreground">{p.excerpt}</p>
+          {p.excerpt && <p className="mt-5 text-lg text-muted-foreground">{p.excerpt}</p>}
         </Container>
       </Section>
 
@@ -81,25 +90,28 @@ function Post() {
         </aside>
       </Container>
 
-      <Section className="bg-muted/30">
-        <Container>
-          <h2 className="font-display text-3xl">More from the studio</h2>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((r) => (
-              <Link key={r.slug} to="/blog/$slug" params={{ slug: r.slug }} className="group block">
-                <div className="overflow-hidden rounded-xl border border-border bg-card">
-                  <img src={r.cover} alt="" loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
-                </div>
-                <h3 className="mt-4 font-display text-xl group-hover:underline underline-offset-4">{r.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{r.excerpt}</p>
-              </Link>
-            ))}
-          </div>
-          <div className="mt-12 text-center">
-            <Button asChild><Link to="/blog">All articles</Link></Button>
-          </div>
-        </Container>
-      </Section>
+      {related.length > 0 && (
+        <Section className="bg-muted/30">
+          <Container>
+            <h2 className="font-display text-3xl">More from the studio</h2>
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {related.map((r) => (
+                <Link key={r.slug} to="/blog/$slug" params={{ slug: r.slug }} className="group block">
+                  <div className="overflow-hidden rounded-xl border border-border bg-card">
+                    <img src={r.cover} alt="" loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+                  </div>
+                  <h3 className="mt-4 font-display text-xl group-hover:underline underline-offset-4">{r.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{r.excerpt}</p>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-12 text-center">
+              <Button asChild><Link to="/blog">All articles</Link></Button>
+            </div>
+          </Container>
+        </Section>
+      )}
     </>
   );
 }
+
