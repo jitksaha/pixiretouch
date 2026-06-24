@@ -10,8 +10,10 @@ export const BRAND = {
   description:
     "Pixi Retouch is a professional image editing and retouching studio for ecommerce, fashion, and product photographers. Clipping path, retouching, ghost mannequin, color correction, and more — delivered with a guaranteed turnaround.",
   email: "hello@pixiretouch.com",
-  whatsapp: "+1-555-010-9090",
-  whatsappLink: "https://wa.me/15550109090",
+  phone: "+8801720112276",
+  phoneLink: "tel:+8801720112276",
+  whatsapp: "+8801720112276",
+  whatsappLink: "https://wa.me/8801720112276",
   parentBrand: { name: "Pixiraw", url: "https://pixiraw.com" },
   stats: [
     { value: "50k+", label: "Images delivered monthly" },
