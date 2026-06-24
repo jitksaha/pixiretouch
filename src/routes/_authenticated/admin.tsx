@@ -41,6 +41,7 @@ import {
   ShieldCheck,
   ChevronDown,
   BarChart3,
+  Library,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -65,6 +66,7 @@ const primaryNav: NavItem[] = [
 const contentNav: NavItem[] = [
   { to: "/admin/blog", label: "Blog", icon: FileText },
   { to: "/admin/portfolio", label: "Portfolio", icon: ImageIcon },
+  { to: "/admin/media", label: "Media library", icon: Library },
   { to: "/admin/services", label: "Services", icon: Wrench },
 ];
 
@@ -75,6 +77,7 @@ const titleByPath: Record<string, { title: string; subtitle: string }> = {
   "/admin/analytics": { title: "Analytics", subtitle: "Funnels, growth and CSV exports" },
   "/admin/blog": { title: "Blog", subtitle: "Stories, tutorials and announcements" },
   "/admin/portfolio": { title: "Portfolio", subtitle: "Before / after case studies" },
+  "/admin/media": { title: "Media library", subtitle: "Upload, search and reuse images & videos" },
   "/admin/services": { title: "Services", subtitle: "Page content overrides" },
 };
 
