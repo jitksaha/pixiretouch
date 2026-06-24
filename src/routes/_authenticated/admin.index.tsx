@@ -162,8 +162,8 @@ function Dashboard() {
   );
 
   const chartConfig = {
-    quotes: { label: "Quotes", color: "hsl(var(--primary))" },
-    messages: { label: "Messages", color: "hsl(var(--muted-foreground))" },
+    quotes: { label: "Quotes", color: "var(--primary)" },
+    messages: { label: "Messages", color: "var(--muted-foreground)" },
   } satisfies ChartConfig;
 
   return (
@@ -224,20 +224,20 @@ function Dashboard() {
                 <AreaChart data={trend} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
                   <defs>
                     <linearGradient id="fillQuotes" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.35} />
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                      <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="fillMessages" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--muted-foreground))" stopOpacity={0.25} />
-                      <stop offset="95%" stopColor="hsl(var(--muted-foreground))" stopOpacity={0} />
+                      <stop offset="5%" stopColor="var(--muted-foreground)" stopOpacity={0.25} />
+                      <stop offset="95%" stopColor="var(--muted-foreground)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-border" />
                   <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} fontSize={11} />
                   <YAxis hide allowDecimals={false} />
                   <ChartTooltip content={<ChartTooltipContent indicator="dot" />} />
-                  <Area type="monotone" dataKey="messages" stroke="hsl(var(--muted-foreground))" fill="url(#fillMessages)" strokeWidth={1.5} />
-                  <Area type="monotone" dataKey="quotes" stroke="hsl(var(--primary))" fill="url(#fillQuotes)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="messages" stroke="var(--muted-foreground)" fill="url(#fillMessages)" strokeWidth={1.5} />
+                  <Area type="monotone" dataKey="quotes" stroke="var(--primary)" fill="url(#fillQuotes)" strokeWidth={2} />
                 </AreaChart>
               </ChartContainer>
             )}
