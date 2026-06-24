@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { PORTFOLIO, PORTFOLIO_CATEGORIES, type PortfolioItem } from "@/content/site";
+import { PORTFOLIO_CATEGORIES, type PortfolioItem } from "@/content/site";
+import { useDynamicPortfolio } from "@/lib/dynamic-content";
+
 
 export const Route = createFileRoute("/sample")({
   head: () => ({
@@ -22,7 +24,12 @@ export const Route = createFileRoute("/sample")({
 function Sample() {
   const [cat, setCat] = useState<string>("All");
   const [open, setOpen] = useState<PortfolioItem | null>(null);
-  const items = cat === "All" ? PORTFOLIO : PORTFOLIO.filter((p) => p.category === cat);
+  const { items: all } = useDynamicPortfolio();
+  const items = useMemo(
+    () => (cat === "All" ? all : all.filter((p) => p.category === cat)),
+    [cat, all],
+  );
+
 
   return (
     <>

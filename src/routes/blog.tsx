@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
-import { BLOG } from "@/content/site";
+import { useDynamicBlog } from "@/lib/dynamic-content";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
@@ -17,7 +17,8 @@ export const Route = createFileRoute("/blog")({
 });
 
 function BlogIndex() {
-  const [hero, ...rest] = BLOG;
+  const { posts } = useDynamicBlog();
+  const [hero, ...rest] = posts;
   return (
     <>
       <Section className="pt-20 md:pt-28">
@@ -48,24 +49,27 @@ function BlogIndex() {
             </Link>
           )}
 
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {rest.map((p) => (
-              <Link key={p.slug} to="/blog/$slug" params={{ slug: p.slug }} className="group block">
-                <div className="overflow-hidden rounded-xl border border-border bg-card">
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <img src={p.cover} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+          {rest.length > 0 && (
+            <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {rest.map((p) => (
+                <Link key={p.slug} to="/blog/$slug" params={{ slug: p.slug }} className="group block">
+                  <div className="overflow-hidden rounded-xl border border-border bg-card">
+                    <div className="aspect-[4/3] overflow-hidden">
+                      <img src={p.cover} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+                    </div>
                   </div>
-                </div>
-                <div className="mt-5">
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground">{p.category} · {new Date(p.date).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}</div>
-                  <h3 className="mt-2 font-display text-2xl group-hover:underline underline-offset-4">{p.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{p.excerpt}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
+                  <div className="mt-5">
+                    <div className="text-xs uppercase tracking-wider text-muted-foreground">{p.category} · {new Date(p.date).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}</div>
+                    <h3 className="mt-2 font-display text-2xl group-hover:underline underline-offset-4">{p.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{p.excerpt}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </Container>
       </Section>
     </>
   );
 }
+

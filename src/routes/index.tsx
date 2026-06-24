@@ -7,7 +7,9 @@ import { TrialDialog } from "@/components/site/TrialDialog";
 import { LogoBar } from "@/components/site/LogoBar";
 import { VideoEmbed } from "@/components/site/VideoEmbed";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { BRAND, SERVICES, INDUSTRIES, PROCESS, TESTIMONIALS, FAQS, PORTFOLIO, VIDEOS } from "@/content/site";
+import { BRAND, SERVICES, INDUSTRIES, PROCESS, TESTIMONIALS, FAQS, VIDEOS } from "@/content/site";
+import { useDynamicPortfolio } from "@/lib/dynamic-content";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -212,6 +214,7 @@ function ProcessSteps() {
 }
 
 function PortfolioTeaser() {
+  const { items } = useDynamicPortfolio();
   return (
     <Section>
       <Container>
@@ -223,7 +226,7 @@ function PortfolioTeaser() {
           <Link to="/sample" className="hidden text-sm font-medium underline-offset-4 hover:underline md:inline">Full portfolio →</Link>
         </div>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {PORTFOLIO.slice(0, 6).map((p) => (
+          {items.slice(0, 6).map((p) => (
             <figure key={p.id} className="group overflow-hidden rounded-xl border border-border bg-card">
               <div className="aspect-[4/3] overflow-hidden">
                 <img src={p.after} alt={p.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
@@ -239,6 +242,7 @@ function PortfolioTeaser() {
     </Section>
   );
 }
+
 
 function Industries() {
   return (
