@@ -34,7 +34,9 @@ function Contact() {
   const [done, setDone] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const parsed = schema.safeParse({
@@ -50,6 +52,14 @@ function Contact() {
       return;
     }
     setErrors({});
+    setSubmitting(true);
+    const { supabase } = await import("@/integrations/supabase/client");
+    const { error } = await supabase.from("contact_messages").insert(parsed.data);
+    setSubmitting(false);
+    if (error) {
+      setErrors({ message: "Could not send. Please try again." });
+      return;
+    }
     setDone(true);
   };
 
