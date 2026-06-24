@@ -5,7 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Container, Section } from "@/components/site/Container";
+import { CheckCircle2, AlertCircle, MailCheck } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -31,7 +33,7 @@ function AuthPage() {
   const [mode, setMode] = useState<"signin" | "forgot">("signin");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [info, setInfo] = useState<string | null>(null);
+  const [sentTo, setSentTo] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -39,9 +41,13 @@ function AuthPage() {
     });
   }, [navigate]);
 
+  const switchMode = (next: "signin" | "forgot") => {
+    setMode(next); setError(null); setSentTo(null);
+  };
+
   const onSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null); setInfo(null);
+    setError(null);
     const fd = new FormData(e.currentTarget);
     const parsed = signInSchema.safeParse({ email: fd.get("email"), password: fd.get("password") });
     if (!parsed.success) { setError(parsed.error.issues[0]?.message ?? "Invalid input"); return; }
@@ -54,7 +60,7 @@ function AuthPage() {
 
   const onForgot = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null); setInfo(null);
+    setError(null); setSentTo(null);
     const fd = new FormData(e.currentTarget);
     const parsed = resetSchema.safeParse({ email: fd.get("email") });
     if (!parsed.success) { setError(parsed.error.issues[0]?.message ?? "Invalid email"); return; }
@@ -64,7 +70,7 @@ function AuthPage() {
     });
     setLoading(false);
     if (resetErr) { setError(resetErr.message); return; }
-    setInfo("If an account exists for that email, a password reset link has been sent.");
+    setSentTo(parsed.data.email);
   };
 
   return (
@@ -88,7 +94,7 @@ function AuthPage() {
                 <Label htmlFor="password">Password</Label>
                 <button
                   type="button"
-                  onClick={() => { setMode("forgot"); setError(null); setInfo(null); }}
+                  onClick={() => switchMode("forgot")}
                   className="text-xs text-muted-foreground hover:underline"
                 >
                   Forgot password?
@@ -96,8 +102,13 @@ function AuthPage() {
               </div>
               <Input id="password" name="password" type="password" autoComplete="current-password" required />
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            {info && <p className="text-sm text-muted-foreground">{info}</p>}
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Sign in failed</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Signing in…" : "Sign in"}
             </Button>
@@ -109,15 +120,30 @@ function AuthPage() {
           <form onSubmit={onForgot} className="mt-8 space-y-4 rounded-2xl border border-border bg-card p-6 shadow-soft">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" type="email" autoComplete="email" required />
+              <Input id="email" name="email" type="email" autoComplete="email" required defaultValue={sentTo ?? ""} />
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            {info && <p className="text-sm text-foreground">{info}</p>}
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Couldn't send reset email</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            {sentTo && (
+              <Alert className="border-emerald-500/40 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200">
+                <MailCheck className="h-4 w-4" />
+                <AlertTitle>Check your inbox</AlertTitle>
+                <AlertDescription>
+                  If an account exists for <strong>{sentTo}</strong>, a password reset link is on its way.
+                  The link expires shortly — open it on this device.
+                </AlertDescription>
+              </Alert>
+            )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Sending…" : "Send reset link"}
+              {loading ? "Sending…" : sentTo ? "Resend reset link" : "Send reset link"}
             </Button>
             <p className="text-center text-xs text-muted-foreground">
-              <button type="button" onClick={() => { setMode("signin"); setError(null); setInfo(null); }} className="hover:underline">
+              <button type="button" onClick={() => switchMode("signin")} className="hover:underline">
                 ← Back to sign in
               </button>
             </p>
