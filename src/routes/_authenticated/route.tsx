@@ -6,6 +6,21 @@ export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async () => {
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) throw redirect({ to: "/auth" });
+
+    // Enforce admin-only access to the entire authenticated subtree.
+    // RLS still protects data, but this prevents non-admins from seeing the panel shell.
+    const { data: roleRow } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+
+    if (!roleRow) {
+      await supabase.auth.signOut();
+      throw redirect({ to: "/auth" });
+    }
+
     return { user: data.user };
   },
   component: () => <Outlet />,

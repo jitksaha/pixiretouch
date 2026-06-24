@@ -49,7 +49,9 @@ type MediaAsset = {
 };
 
 const BUCKET = "media";
-const SIGNED_TTL = 60 * 60 * 24 * 365; // 1 year
+// Short TTL for admin previews — URLs are re-signed on every load().
+// Long-lived URLs would outlive deletes and leak private bucket content.
+const SIGNED_TTL = 60 * 60; // 1 hour
 
 function formatBytes(b: number) {
   if (!b) return "0 B";
