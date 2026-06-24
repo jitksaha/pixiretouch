@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
-import { Mail, MessageCircle, Clock, Globe } from "lucide-react";
+import { Mail, MessageCircle, Clock, Globe, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -70,6 +70,7 @@ function Contact() {
           <div className="space-y-5">
             <Info icon={<Mail className="h-5 w-5" />} title="Email" body={<a href={`mailto:${BRAND.email}`} className="hover:underline">{BRAND.email}</a>} />
             <Info icon={<MessageCircle className="h-5 w-5" />} title="WhatsApp" body={<a href={BRAND.whatsappLink} target="_blank" rel="noreferrer" className="hover:underline">{BRAND.whatsapp}</a>} />
+            <Info icon={<Phone className="h-5 w-5" />} title="Phone" body={<a href={BRAND.phoneLink} className="hover:underline">{BRAND.phone}</a>} />
             <Info icon={<Clock className="h-5 w-5" />} title="Hours" body="24 / 7 production · Replies during business hours across three time zones" />
             <Info icon={<Globe className="h-5 w-5" />} title="Studios" body="Singapore · Lisbon · New York" />
           </div>

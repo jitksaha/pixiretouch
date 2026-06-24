@@ -123,6 +123,17 @@ export function Footer() {
                       {BRAND.whatsapp}
                     </a>
                   </div>
+                  <div>
+                    <span className="mb-1 block text-[10px] uppercase tracking-widest text-ink-foreground/40">
+                      Phone
+                    </span>
+                    <a
+                      href={BRAND.phoneLink}
+                      className="text-sm text-ink-foreground transition-colors hover:text-primary"
+                    >
+                      {BRAND.phone}
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
