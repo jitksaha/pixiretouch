@@ -14,6 +14,7 @@ const NAV = [
   { to: "/sample", label: "Sample", hasSubmenu: false },
   { to: "/pricing", label: "Pricing", hasSubmenu: false },
   { to: "/blog", label: "Blog", hasSubmenu: false },
+  { to: "/about", label: "About", hasSubmenu: false },
 ] as const;
 
 // Curated submenu — only these services appear in the Services dropdown.
