@@ -10,6 +10,7 @@ import { WhyUsGrid } from "@/components/site/WhyUsGrid";
 import { HowItWorks } from "@/components/site/HowItWorks";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { BRAND, SERVICES, PORTFOLIO, TESTIMONIALS, FAQS } from "@/content/site";
+import studioImg from "@/assets/studio-illustration.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
