@@ -5,11 +5,12 @@ import { Container, Section, Eyebrow } from "@/components/site/Container";
 import { BeforeAfter } from "@/components/site/BeforeAfter";
 import { TrialDialog } from "@/components/site/TrialDialog";
 import { LogoBar } from "@/components/site/LogoBar";
-import { VideoEmbed } from "@/components/site/VideoEmbed";
+import { ServiceZigzag, type ZigzagRow } from "@/components/site/ServiceZigzag";
+import { WhyUsGrid } from "@/components/site/WhyUsGrid";
+import { HowItWorks } from "@/components/site/HowItWorks";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { BRAND, SERVICES, INDUSTRIES, PROCESS, TESTIMONIALS, FAQS, VIDEOS } from "@/content/site";
-import { useDynamicPortfolio } from "@/lib/dynamic-content";
-
+import { BRAND, SERVICES, PORTFOLIO, TESTIMONIALS, FAQS } from "@/content/site";
+import studioImg from "@/assets/studio-illustration.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,18 +27,28 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+const findSvc = (slug: string) => SERVICES.find((s) => s.slug === slug)!;
+const findPort = (id: string) => PORTFOLIO.find((p) => p.id === id)!;
+
+const ROWS: ZigzagRow[] = [
+  { slug: "clipping-path",            num: "01", title: findSvc("clipping-path").title,            body: findSvc("clipping-path").description,            bullets: findSvc("clipping-path").features,            before: findPort("p1").before, after: findPort("p1").after },
+  { slug: "background-removal",       num: "02", title: findSvc("background-removal").title,       body: findSvc("background-removal").description,       bullets: findSvc("background-removal").features,       before: findPort("p2").before, after: findPort("p2").after },
+  { slug: "product-photo-retouching", num: "03", title: "Photo Retouching",                          body: findSvc("product-photo-retouching").description, bullets: findSvc("product-photo-retouching").features, before: findPort("p5").before, after: findPort("p5").after },
+  { slug: "image-masking",            num: "04", title: findSvc("image-masking").title,             body: findSvc("image-masking").description,            bullets: findSvc("image-masking").features,            before: findPort("p8").before, after: findPort("p8").after },
+  { slug: "shadow-creation",          num: "05", title: "Shadow Making",                             body: findSvc("shadow-creation").description,          bullets: findSvc("shadow-creation").features,          before: findPort("p6").before, after: findPort("p6").after },
+  { slug: "ghost-mannequin",          num: "06", title: "Ghost Mannequin / Neck Joint",              body: findSvc("ghost-mannequin").description,          bullets: findSvc("ghost-mannequin").features,          before: findPort("p3").before, after: findPort("p3").after },
+];
+
 function Home() {
   return (
     <>
       <Hero />
       <TrustBar />
-      <ServicesGrid />
-      <BeforeAfterShowcase />
+      <StudioIntro />
+      <ServicesZigzagBand />
       <WhyChoose />
-      <ProcessSteps />
-      <PortfolioTeaser />
-      <Industries />
-      <VideoShowcase />
+      <BigFileCta />
+      <HowItWorksBand />
       <Stats />
       <Testimonials />
       <FaqSection />
@@ -46,23 +57,24 @@ function Home() {
   );
 }
 
+/* ───────────────── Hero ───────────────── */
 function Hero() {
   return (
-    <Section className="relative flex min-h-[calc(100dvh-2.75rem)] flex-col justify-center overflow-hidden pt-12 pb-0 md:min-h-[calc(100dvh-3rem)] md:pt-16 md:pb-0">
+    <Section className="relative overflow-hidden bg-[color:var(--surface-rose)] pt-14 pb-16 md:pt-20 md:pb-24">
       <Container className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
         <div className="animate-fade-up">
-          <Eyebrow>Image editing studio · Est. since 2014</Eyebrow>
-          <h1 className="mt-5 font-display text-4xl leading-[1.05] md:text-5xl lg:text-6xl">
-            Pixel-perfect retouching for the brands people actually buy from.
+          <Eyebrow>Image editing studio · Est. 2014</Eyebrow>
+          <h1 className="mt-5 font-display text-4xl leading-[1.05] md:text-5xl lg:text-[3.6rem]">
+            Get pixel-perfect image editing service from our expert team.
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-            Hand-drawn clipping paths, ghost mannequin work, and product retouching for ecommerce teams that care how every SKU looks at 100% zoom.
+            Hand-drawn clipping paths, ghost mannequin, retouching and background removal — delivered at studio quality, at ecommerce volume.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <TrialDialog>
-              <Button size="lg">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Button>
+              <Button size="lg" className="rounded-full px-7">Get a quote <ArrowRight className="ml-1 h-4 w-4" /></Button>
             </TrialDialog>
-            <Button asChild size="lg" variant="outline">
+            <Button asChild size="lg" variant="outline" className="rounded-full px-7">
               <Link to="/sample">See the work</Link>
             </Button>
           </div>
@@ -75,13 +87,14 @@ function Hero() {
           </ul>
         </div>
         <div className="relative">
+          <div className="absolute inset-0 -z-10 translate-x-6 translate-y-6 rounded-[2.5rem] bg-primary/15" />
           <BeforeAfter
             before="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200&q=85"
             after="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=1200&q=85"
-            className="shadow-lift"
+            className="shadow-lift rounded-3xl overflow-hidden"
           />
-          <div className="absolute -bottom-6 -left-6 hidden rounded-xl border border-border bg-card p-4 shadow-soft md:block">
-            <div className="text-3xl font-display">99.9%</div>
+          <div className="absolute -bottom-6 -left-6 hidden rounded-2xl border border-border bg-card p-4 shadow-soft md:block">
+            <div className="font-display text-3xl">99.9%</div>
             <div className="text-xs uppercase tracking-wider text-muted-foreground">Quality satisfaction</div>
           </div>
         </div>
@@ -92,191 +105,135 @@ function Hero() {
 
 function TrustBar() {
   return (
-    <div className="border-y border-border bg-muted/30 py-10">
+    <div className="border-y border-border bg-background py-8">
       <Container>
         <p className="text-center text-xs uppercase tracking-[0.18em] text-muted-foreground">
           Trusted by ecommerce teams, agencies and studios worldwide
         </p>
-        <div className="mt-8">
-          <LogoBar />
-        </div>
+        <div className="mt-6"><LogoBar /></div>
       </Container>
     </div>
   );
 }
 
-function ServicesGrid() {
+/* ──────────── Studio Intro Band ──────────── */
+function StudioIntro() {
   return (
-    <Section id="services">
-      <Container>
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <div className="max-w-2xl">
-            <Eyebrow>What we do</Eyebrow>
-            <h2 className="mt-4 font-display text-4xl md:text-5xl">A complete post-production stack for product imagery.</h2>
-          </div>
-          <Link to="/services" className="text-sm font-medium underline-offset-4 hover:underline">All services →</Link>
+    <Section className="bg-[color:var(--surface-cream)]">
+      <Container className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+        <div className="relative">
+          <div className="absolute inset-0 -z-10 rounded-[2.5rem] bg-[color:var(--surface-blush)]" />
+          <img
+            src={studioImg}
+            alt="Photo editing studio illustration"
+            width={1024}
+            height={1024}
+            loading="lazy"
+            className="mx-auto max-h-[420px] w-full max-w-md object-contain"
+          />
         </div>
-
-        <div className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
-          {SERVICES.slice(0, 9).map((s, i) => (
-            <Link
-              key={s.slug}
-              to="/services/$slug"
-              params={{ slug: s.slug }}
-              className="group flex flex-col gap-3 bg-background p-7 transition hover:bg-muted/40"
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-muted-foreground">0{i + 1}</span>
-                <ArrowRight className="h-4 w-4 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
-              </div>
-              <h3 className="font-display text-2xl">{s.title}</h3>
-              <p className="text-sm text-muted-foreground">{s.short}</p>
-            </Link>
-          ))}
+        <div>
+          <Eyebrow>About the studio</Eyebrow>
+          <h2 className="mt-4 font-display text-4xl md:text-5xl">We're a virtual photo editing studio.</h2>
+          <p className="mt-5 max-w-xl text-muted-foreground md:text-lg">
+            Pixi Retouch offers hand-drawn clipping path, retouching and ghost mannequin work to ecommerce brands, agencies and product photographers worldwide. Senior retouchers use the latest Photoshop and pen-tool craft — not AI auto-trace — to make every image catalog-ready.
+          </p>
+          <p className="mt-4 max-w-xl text-muted-foreground md:text-lg">
+            We handle 50,000+ images per month for brands that can't accept "good enough". From a 2-image trial to a 50k-batch seasonal launch, the quality bar never moves.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <TrialDialog>
+              <Button size="lg" className="rounded-full px-7">Order now <ArrowRight className="ml-1 h-4 w-4" /></Button>
+            </TrialDialog>
+            <Button asChild size="lg" variant="outline" className="rounded-full px-7">
+              <Link to="/about">About us</Link>
+            </Button>
+          </div>
         </div>
       </Container>
     </Section>
   );
 }
 
-function BeforeAfterShowcase() {
+/* ────────── Professional Photoshop Services (zigzag) ────────── */
+function ServicesZigzagBand() {
   return (
-    <Section ink className="relative">
-      <Container className="grid items-center gap-12 lg:grid-cols-2">
-        <div>
-          <Eyebrow className="text-ink-foreground/60">Drag to compare</Eyebrow>
-          <h2 className="mt-4 font-display text-4xl md:text-5xl">The difference is in the edges.</h2>
-          <p className="mt-4 max-w-md text-ink-foreground/70">
-            Every clipping path is hand-drawn with the pen tool. No AI auto-trace, no fuzzy edges, no halo at 100% zoom. Try it: drag the slider.
+    <Section id="services" className="bg-background">
+      <Container>
+        <div className="mx-auto max-w-2xl text-center">
+          <Eyebrow className="justify-center">What we do</Eyebrow>
+          <h2 className="mt-4 font-display text-4xl md:text-5xl">Professional Photoshop services.</h2>
+          <p className="mt-4 text-muted-foreground md:text-lg">
+            Six specialist services, delivered by senior retouchers and quoted per image. Click any service for full details and pricing.
           </p>
-          <div className="mt-8">
-            <Button asChild size="lg" variant="secondary">
-              <Link to="/sample">More comparisons</Link>
-            </Button>
-          </div>
         </div>
-        <BeforeAfter
-          before="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1200&q=85"
-          after="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=1200&q=85"
-        />
+
+        <div className="mt-16 space-y-20 md:space-y-24">
+          {ROWS.map((row, i) => (
+            <ServiceZigzag key={row.slug} row={row} reverse={i % 2 === 1} />
+          ))}
+        </div>
+
+        <div className="mt-16 text-center">
+          <Button asChild size="lg" variant="outline" className="rounded-full px-7">
+            <Link to="/services">View all 13 services</Link>
+          </Button>
+        </div>
       </Container>
     </Section>
   );
 }
 
 function WhyChoose() {
-  const items = [
-    { t: "Hand-drawn precision", b: "Real retouchers using the pen tool. Edges hold up at 100% zoom — every time." },
-    { t: "3-step quality control", b: "Editor, lead and account QC every image before delivery. No surprises." },
-    { t: "On-time or it's free", b: "Miss your deadline, miss the invoice. We've held this guarantee for years." },
-    { t: "Volume without compromise", b: "5,000 to 50,000+ images per batch with consistent quality across the run." },
-  ];
   return (
-    <Section>
+    <Section className="bg-[color:var(--surface-sand)]">
       <Container>
-        <div className="max-w-2xl">
-          <Eyebrow>Why Pixi Retouch</Eyebrow>
+        <div className="mx-auto max-w-2xl text-center">
+          <Eyebrow className="justify-center">Why choose us</Eyebrow>
           <h2 className="mt-4 font-display text-4xl md:text-5xl">Built for studios that can't accept "good enough".</h2>
         </div>
-        <div className="mt-14 grid gap-12 md:grid-cols-2">
-          {items.map((it) => (
-            <div key={it.t} className="border-t border-line pt-6">
-              <h3 className="font-display text-2xl">{it.t}</h3>
-              <p className="mt-3 text-muted-foreground">{it.b}</p>
-            </div>
-          ))}
+        <div className="mt-12">
+          <WhyUsGrid />
         </div>
       </Container>
     </Section>
   );
 }
 
-function ProcessSteps() {
+function BigFileCta() {
   return (
-    <Section className="bg-muted/30">
-      <Container>
-        <div className="max-w-2xl">
-          <Eyebrow>How it works</Eyebrow>
-          <h2 className="mt-4 font-display text-4xl md:text-5xl">From sample to delivery in four steps.</h2>
+    <Section className="bg-[color:var(--surface-rose)] py-16 md:py-20">
+      <Container className="grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
+        <div>
+          <Eyebrow>Large files? No problem.</Eyebrow>
+          <h2 className="mt-4 font-display text-3xl md:text-4xl">No need to worry about transmitting large files.</h2>
+          <p className="mt-4 max-w-2xl text-muted-foreground md:text-lg">
+            File size doesn't matter to us. We'll set up a dedicated FTP account with the space you need — uploading and downloading huge batches is on us. Just request access and you're set within the hour.
+          </p>
         </div>
-        <ol className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2 lg:grid-cols-4">
-          {PROCESS.map((p) => (
-            <li key={p.step} className="bg-background p-7">
-              <div className="font-mono text-xs text-muted-foreground">{p.step}</div>
-              <h3 className="mt-3 font-display text-2xl">{p.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{p.body}</p>
-            </li>
-          ))}
-        </ol>
-      </Container>
-    </Section>
-  );
-}
-
-function PortfolioTeaser() {
-  const { items } = useDynamicPortfolio();
-  return (
-    <Section>
-      <Container>
-        <div className="flex items-end justify-between">
-          <div className="max-w-2xl">
-            <Eyebrow>Selected work</Eyebrow>
-            <h2 className="mt-4 font-display text-4xl md:text-5xl">A small sample of recent batches.</h2>
-          </div>
-          <Link to="/sample" className="hidden text-sm font-medium underline-offset-4 hover:underline md:inline">Full portfolio →</Link>
-        </div>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.slice(0, 6).map((p) => (
-            <figure key={p.id} className="group overflow-hidden rounded-xl border border-border bg-card">
-              <div className="aspect-[4/3] overflow-hidden">
-                <img src={p.after} alt={p.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
-              </div>
-              <figcaption className="flex items-center justify-between p-4">
-                <span className="text-sm font-medium">{p.title}</span>
-                <span className="text-xs text-muted-foreground">{p.category}</span>
-              </figcaption>
-            </figure>
-          ))}
+        <div className="flex flex-wrap gap-3 lg:justify-end">
+          <TrialDialog>
+            <Button size="lg" className="rounded-full px-7">Request FTP access <ArrowRight className="ml-1 h-4 w-4" /></Button>
+          </TrialDialog>
+          <Button asChild size="lg" variant="outline" className="rounded-full px-7">
+            <Link to="/contact">Talk to us</Link>
+          </Button>
         </div>
       </Container>
     </Section>
   );
 }
 
-
-function Industries() {
+function HowItWorksBand() {
   return (
-    <Section className="bg-muted/30">
+    <Section className="bg-[color:var(--surface-cream)]">
       <Container>
-        <div className="max-w-2xl">
-          <Eyebrow>Industries we serve</Eyebrow>
-          <h2 className="mt-4 font-display text-4xl md:text-5xl">Built for teams that ship product images at scale.</h2>
+        <div className="mx-auto max-w-2xl text-center">
+          <Eyebrow className="justify-center">How it works</Eyebrow>
+          <h2 className="mt-4 font-display text-4xl md:text-5xl">It's very easy. Submit your order and get it done.</h2>
         </div>
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {INDUSTRIES.map((i) => (
-            <div key={i.name} className="rounded-xl border border-border bg-background p-6">
-              <h3 className="font-display text-xl">{i.name}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{i.desc}</p>
-            </div>
-          ))}
-        </div>
-      </Container>
-    </Section>
-  );
-}
-
-function VideoShowcase() {
-  return (
-    <Section>
-      <Container>
-        <div className="max-w-2xl">
-          <Eyebrow>Inside the studio</Eyebrow>
-          <h2 className="mt-4 font-display text-4xl md:text-5xl">Walkthroughs, technique breakdowns, client stories.</h2>
-        </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {VIDEOS.slice(0, 3).map((v) => (
-            <VideoEmbed key={v.id} video={v} />
-          ))}
+        <div className="mt-12">
+          <HowItWorks />
         </div>
       </Container>
     </Section>
@@ -302,15 +259,15 @@ function Stats() {
 
 function Testimonials() {
   return (
-    <Section>
+    <Section className="bg-background">
       <Container>
-        <div className="max-w-2xl">
-          <Eyebrow>What clients say</Eyebrow>
+        <div className="mx-auto max-w-2xl text-center">
+          <Eyebrow className="justify-center">What clients say</Eyebrow>
           <h2 className="mt-4 font-display text-4xl md:text-5xl">Quiet, accurate, on time.</h2>
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           {TESTIMONIALS.slice(0, 4).map((t) => (
-            <figure key={t.name} className="rounded-2xl border border-border bg-card p-7">
+            <figure key={t.name} className="rounded-2xl border border-border bg-card p-7 shadow-soft">
               <div className="flex gap-0.5 text-primary">
                 {Array.from({ length: t.rating }).map((_, i) => (
                   <Star key={i} className="h-4 w-4 fill-current" />
@@ -331,7 +288,7 @@ function Testimonials() {
 
 function FaqSection() {
   return (
-    <Section className="bg-muted/30">
+    <Section className="bg-[color:var(--surface-cream)]">
       <Container className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
         <div>
           <Eyebrow>FAQ</Eyebrow>
@@ -365,9 +322,9 @@ function FinalCta() {
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <TrialDialog>
-            <Button size="lg" variant="secondary">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Button>
+            <Button size="lg" variant="secondary" className="rounded-full px-7">Start free trial <ArrowRight className="ml-1 h-4 w-4" /></Button>
           </TrialDialog>
-          <Button asChild size="lg" variant="outline" className="border-ink-foreground/30 bg-transparent text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground">
+          <Button asChild size="lg" variant="outline" className="rounded-full px-7 border-ink-foreground/30 bg-transparent text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground">
             <Link to="/contact">Talk to the team</Link>
           </Button>
         </div>

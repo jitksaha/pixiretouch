@@ -34,6 +34,10 @@
   --color-ink-foreground: var(--ink-foreground);
   --color-cream: var(--cream);
   --color-line: var(--line);
+  --color-surface-cream: var(--surface-cream);
+  --color-surface-rose: var(--surface-rose);
+  --color-surface-blush: var(--surface-blush);
+  --color-surface-sand: var(--surface-sand);
 
   --font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
@@ -77,6 +81,12 @@
   --line: oklch(0.88 0.008 85);
   --input: oklch(0.9 0.008 85);
   --ring: oklch(0.62 0.11 40);
+
+  /* Soft pastel band surfaces (derived from rose copper primary + cream) */
+  --surface-cream: oklch(0.975 0.012 80);
+  --surface-rose: oklch(0.94 0.025 40);
+  --surface-blush: oklch(0.96 0.018 30);
+  --surface-sand: oklch(0.95 0.018 75);
 }
 
 .dark {
