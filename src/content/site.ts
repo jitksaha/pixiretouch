@@ -9,7 +9,7 @@ export const BRAND = {
   tagline: "Pixel-perfect image editing for global ecommerce brands.",
   description:
     "Pixi Retouch is a professional image editing and retouching studio for ecommerce, fashion, and product photographers. Clipping path, retouching, ghost mannequin, color correction, and more — delivered with a guaranteed turnaround.",
-  email: "hello@pixiretouch.com",
+  email: "contactpixiretouch@gmail.com",
   phone: "+8801720112276",
   phoneLink: "tel:+8801720112276",
   whatsapp: "+8801720112276",
