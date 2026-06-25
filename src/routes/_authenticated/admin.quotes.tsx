@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Trash2, Search, Mail, Phone, Calendar, Package, Clock, Activity, CheckCircle2 } from "lucide-react";
+import { Trash2, Search, Mail, Phone, Calendar, Package, Clock, Activity, CheckCircle2, Paperclip, Download, ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/quotes")({
   component: QuotesAdmin,
