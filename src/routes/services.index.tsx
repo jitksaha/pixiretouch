@@ -6,6 +6,7 @@ import { TrialDialog } from "@/components/site/TrialDialog";
 import { ServiceZigzag, type ZigzagRow } from "@/components/site/ServiceZigzag";
 import { WhyUsGrid } from "@/components/site/WhyUsGrid";
 import { SERVICES, PORTFOLIO } from "@/content/site";
+import { useServiceOverrides, applyServiceOverride } from "@/lib/dynamic-content";
 import heroImg from "@/assets/services-hero.jpg";
 
 export const Route = createFileRoute("/services/")({
@@ -41,7 +42,13 @@ const ZIGZAG: ZigzagRow[] = [
 const COMPACT_SLUGS = ["color-correction", "photo-restoration", "photo-manipulation", "neck-joint", "image-enhancement"];
 
 function ServicesIndex() {
-  const compact = COMPACT_SLUGS.map(svc).filter(Boolean);
+  const { overrides } = useServiceOverrides();
+  const ov = (slug: string) => applyServiceOverride(svc(slug), overrides[slug]);
+  const zigzag: ZigzagRow[] = ZIGZAG.map((row) => {
+    const s = ov(row.slug);
+    return { ...row, title: s.title, body: s.description, bullets: s.features };
+  });
+  const compact = COMPACT_SLUGS.map((slug) => ov(slug)).filter(Boolean);
 
   return (
     <>
@@ -82,7 +89,7 @@ function ServicesIndex() {
       <Section className="bg-background">
         <Container>
           <div className="space-y-20 md:space-y-24">
-            {ZIGZAG.map((row, i) => (
+            {zigzag.map((row, i) => (
               <ServiceZigzag key={row.slug} row={row} reverse={i % 2 === 1} />
             ))}
           </div>

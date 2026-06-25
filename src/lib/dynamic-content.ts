@@ -1,6 +1,62 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { BLOG, PORTFOLIO, type PortfolioItem } from "@/content/site";
+import { BLOG, PORTFOLIO, SERVICES, type PortfolioItem, type Service } from "@/content/site";
+
+export type ServiceOverride = {
+  slug: string;
+  title?: string | null;
+  description?: string | null;
+  pricing?: string | null;
+  features?: string[] | null;
+};
+
+export function useServiceOverrides(): {
+  overrides: Record<string, ServiceOverride>;
+  ready: boolean;
+} {
+  const [overrides, setOverrides] = useState<Record<string, ServiceOverride>>({});
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    let cancel = false;
+    (async () => {
+      const { data } = await supabase
+        .from("services_content")
+        .select("slug,title,description,pricing,features");
+      if (cancel) return;
+      const map: Record<string, ServiceOverride> = {};
+      (data ?? []).forEach((r: any) => {
+        map[r.slug] = {
+          slug: r.slug,
+          title: r.title,
+          description: r.description,
+          pricing: r.pricing,
+          features: r.features,
+        };
+      });
+      setOverrides(map);
+      setReady(true);
+    })();
+    return () => { cancel = true; };
+  }, []);
+  return { overrides, ready };
+}
+
+export function applyServiceOverride(base: Service, ov?: ServiceOverride): Service {
+  if (!ov) return base;
+  return {
+    ...base,
+    title: ov.title || base.title,
+    description: ov.description || base.description,
+    short: ov.description || base.short,
+    features: ov.features && ov.features.length ? ov.features : base.features,
+  };
+}
+
+export function useDynamicServices(): { services: Service[]; ready: boolean } {
+  const { overrides, ready } = useServiceOverrides();
+  const services = SERVICES.map((s) => applyServiceOverride(s, overrides[s.slug]));
+  return { services, ready };
+}
 
 export type DynamicBlogPost = {
   slug: string;

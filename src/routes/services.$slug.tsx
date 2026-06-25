@@ -7,6 +7,7 @@ import { TrialDialog } from "@/components/site/TrialDialog";
 import { SERVICES, PROCESS, TESTIMONIALS, PORTFOLIO, type PortfolioItem } from "@/content/site";
 import { serviceImage } from "@/content/serviceImages";
 import { BeforeAfter } from "@/components/site/BeforeAfter";
+import { useServiceOverrides, applyServiceOverride } from "@/lib/dynamic-content";
 
 const PROCESS_ICONS = [Send, Sparkles, Upload, FileCheck];
 const FORMATS = ["JPG", "PNG", "TIFF", "PSD", "WEBP", "RAW"];
@@ -97,8 +98,12 @@ export const Route = createFileRoute("/services/$slug")({
 });
 
 function ServiceDetail() {
-  const service = Route.useLoaderData();
-  const related = SERVICES.filter((s) => s.slug !== service.slug).slice(0, 3);
+  const baseService = Route.useLoaderData();
+  const { overrides } = useServiceOverrides();
+  const service = applyServiceOverride(baseService, overrides[baseService.slug]);
+  const related = SERVICES.filter((s) => s.slug !== service.slug)
+    .slice(0, 3)
+    .map((s) => applyServiceOverride(s, overrides[s.slug]));
   const hero = serviceImage(service.slug);
   const idx = SERVICES.findIndex((s) => s.slug === service.slug);
   const num = String(idx + 1).padStart(2, "0");
