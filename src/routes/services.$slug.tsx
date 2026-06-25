@@ -98,8 +98,12 @@ export const Route = createFileRoute("/services/$slug")({
 });
 
 function ServiceDetail() {
-  const service = Route.useLoaderData();
-  const related = SERVICES.filter((s) => s.slug !== service.slug).slice(0, 3);
+  const baseService = Route.useLoaderData();
+  const { overrides } = useServiceOverrides();
+  const service = applyServiceOverride(baseService, overrides[baseService.slug]);
+  const related = SERVICES.filter((s) => s.slug !== service.slug)
+    .slice(0, 3)
+    .map((s) => applyServiceOverride(s, overrides[s.slug]));
   const hero = serviceImage(service.slug);
   const idx = SERVICES.findIndex((s) => s.slug === service.slug);
   const num = String(idx + 1).padStart(2, "0");
