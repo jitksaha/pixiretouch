@@ -140,6 +140,50 @@ export function TrialDialog({
   const set = <K extends keyof Form>(k: K, v: Form[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
+  const uploadOne = (file: File, id: string, path: string) =>
+    new Promise<void>((resolve) => {
+      const url = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/media/${path}`;
+      const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", url, true);
+      xhr.setRequestHeader("apikey", key);
+      xhr.setRequestHeader("Authorization", `Bearer ${key}`);
+      xhr.setRequestHeader("x-upsert", "false");
+      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+      xhr.upload.onprogress = (e) => {
+        if (!e.lengthComputable) return;
+        const pct = Math.round((e.loaded / e.total) * 100);
+        setAttachments((arr) =>
+          arr.map((a) => (a.id === id ? { ...a, progress: pct } : a)),
+        );
+      };
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          setAttachments((arr) =>
+            arr.map((a) =>
+              a.id === id ? { ...a, progress: 100, status: "done" } : a,
+            ),
+          );
+        } else {
+          setAttachments((arr) =>
+            arr.map((a) =>
+              a.id === id ? { ...a, status: "error", error: `HTTP ${xhr.status}` } : a,
+            ),
+          );
+        }
+        resolve();
+      };
+      xhr.onerror = () => {
+        setAttachments((arr) =>
+          arr.map((a) =>
+            a.id === id ? { ...a, status: "error", error: "Network error" } : a,
+          ),
+        );
+        resolve();
+      };
+      xhr.send(file);
+    });
+
   const handleFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
     const incoming = Array.from(files);
@@ -149,36 +193,40 @@ export function TrialDialog({
     }
     setUploading(true);
     const folder = `quote-uploads/${crypto.randomUUID()}`;
-    const next: Attachment[] = [];
+    const queued: Attachment[] = [];
     for (const file of incoming) {
       if (file.size > MAX_FILE_MB * 1024 * 1024) {
         toast.error(`${file.name} exceeds ${MAX_FILE_MB} MB.`);
         continue;
       }
-      const path = `${folder}/${Date.now()}-${slugifyName(file.name)}`;
-      const { error } = await supabase.storage.from("media").upload(path, file, {
-        contentType: file.type || "application/octet-stream",
-        upsert: false,
+      queued.push({
+        id: crypto.randomUUID(),
+        name: file.name,
+        size: file.size,
+        path: `${folder}/${Date.now()}-${slugifyName(file.name)}`,
+        progress: 0,
+        status: "uploading",
       });
-      if (error) {
-        toast.error(`Upload failed: ${file.name}`);
-        continue;
-      }
-      next.push({ name: file.name, size: file.size, path });
     }
-    if (next.length) {
-      setAttachments((a) => [...a, ...next]);
-      toast.success(`${next.length} file${next.length > 1 ? "s" : ""} uploaded`);
+    if (queued.length === 0) {
+      setUploading(false);
+      return;
     }
+    setAttachments((a) => [...a, ...queued]);
+    await Promise.all(
+      queued.map((q, i) => uploadOne(incoming[i], q.id, q.path)),
+    );
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const removeAttachment = async (idx: number) => {
-    const att = attachments[idx];
+  const removeAttachment = async (id: string) => {
+    const att = attachments.find((a) => a.id === id);
     if (!att) return;
-    setAttachments((a) => a.filter((_, i) => i !== idx));
-    await supabase.storage.from("media").remove([att.path]);
+    setAttachments((a) => a.filter((x) => x.id !== id));
+    if (att.status === "done") {
+      await supabase.storage.from("media").remove([att.path]);
+    }
   };
 
   const submit = async () => {
