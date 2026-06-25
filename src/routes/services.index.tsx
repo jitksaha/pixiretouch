@@ -89,7 +89,7 @@ function ServicesIndex() {
       <Section className="bg-background">
         <Container>
           <div className="space-y-20 md:space-y-24">
-            {ZIGZAG.map((row, i) => (
+            {zigzag.map((row, i) => (
               <ServiceZigzag key={row.slug} row={row} reverse={i % 2 === 1} />
             ))}
           </div>
