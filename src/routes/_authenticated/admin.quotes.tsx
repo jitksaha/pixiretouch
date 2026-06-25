@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Trash2, Search, Mail, Phone, Calendar, Package, Clock, Activity, CheckCircle2 } from "lucide-react";
+import { Trash2, Search, Mail, Phone, Calendar, Package, Clock, Activity, CheckCircle2, Paperclip, Download, ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/quotes")({
   component: QuotesAdmin,
@@ -30,6 +30,7 @@ type Quote = {
   message: string | null;
   status: string;
   created_at: string;
+  attachments: string[] | null;
 };
 
 const STATUS = [
@@ -244,6 +245,16 @@ function QuotesAdmin() {
                   </div>
                 )}
 
+                {selected.attachments && selected.attachments.length > 0 && (
+                  <div>
+                    <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                      Attachments ({selected.attachments.length})
+                    </p>
+                    <Attachments paths={selected.attachments} />
+                  </div>
+                )}
+
+
                 <div className="flex flex-wrap gap-2 border-t border-border/60 pt-4">
                   <Button asChild size="sm">
                     <a href={`mailto:${selected.email}?subject=${encodeURIComponent("Your quote request")}`}>
@@ -277,6 +288,55 @@ function Field({ icon: Icon, label, value }: { icon: typeof Mail; label: string;
         <Icon className="h-3 w-3" /> {label}
       </p>
       <p className="mt-1 text-sm">{value}</p>
+    </div>
+  );
+}
+
+function Attachments({ paths }: { paths: string[] }) {
+  const [urls, setUrls] = useState<Record<string, string>>({});
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const entries: [string, string][] = [];
+      for (const p of paths) {
+        const { data } = await supabase.storage.from("media").createSignedUrl(p, 3600);
+        if (data?.signedUrl) entries.push([p, data.signedUrl]);
+      }
+      if (!cancelled) setUrls(Object.fromEntries(entries));
+    })();
+    return () => { cancelled = true; };
+  }, [paths]);
+
+  const isImage = (p: string) => /\.(png|jpe?g|gif|webp|avif|svg)$/i.test(p);
+  const fileName = (p: string) => p.split("/").pop() || p;
+
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {paths.map((p) => {
+        const url = urls[p];
+        return (
+          <div key={p} className="overflow-hidden rounded-lg border border-border bg-card">
+            {url && isImage(p) ? (
+              <a href={url} target="_blank" rel="noreferrer" className="block aspect-square overflow-hidden bg-muted">
+                <img src={url} alt={fileName(p)} className="h-full w-full object-cover" />
+              </a>
+            ) : (
+              <div className="flex aspect-square items-center justify-center bg-muted">
+                <Paperclip className="h-8 w-8 text-muted-foreground" />
+              </div>
+            )}
+            <div className="flex items-center gap-1 p-2">
+              <p className="flex-1 truncate text-[11px]" title={fileName(p)}>{fileName(p)}</p>
+              {url && (
+                <>
+                  <a href={url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground" aria-label="Open"><ExternalLink className="h-3.5 w-3.5" /></a>
+                  <a href={url} download className="text-muted-foreground hover:text-foreground" aria-label="Download"><Download className="h-3.5 w-3.5" /></a>
+                </>
+              )}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
