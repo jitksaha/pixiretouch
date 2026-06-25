@@ -6,6 +6,7 @@ import { TrialDialog } from "@/components/site/TrialDialog";
 import { ServiceZigzag, type ZigzagRow } from "@/components/site/ServiceZigzag";
 import { WhyUsGrid } from "@/components/site/WhyUsGrid";
 import { SERVICES, PORTFOLIO } from "@/content/site";
+import { useServiceOverrides, applyServiceOverride } from "@/lib/dynamic-content";
 import heroImg from "@/assets/services-hero.jpg";
 
 export const Route = createFileRoute("/services/")({
