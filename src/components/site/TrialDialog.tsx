@@ -72,25 +72,43 @@ const STEPS = ["Project", "Volume", "Contact"] as const;
 export function TrialDialog({
   children,
   defaultService,
+  defaultVolume,
+  defaultTurnaround,
+  defaultNotes,
   title = "Start your free trial",
   description = "Send up to 2 sample images. We'll edit them free of charge so you can judge quality.",
 }: {
   children: ReactNode;
   defaultService?: string;
+  defaultVolume?: string;
+  defaultTurnaround?: string;
+  defaultNotes?: string;
   title?: string;
   description?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
-  const [form, setForm] = useState<Form>({ ...empty, service: defaultService ?? "" });
+  const [form, setForm] = useState<Form>({
+    ...empty,
+    service: defaultService ?? "",
+    volume: defaultVolume ?? empty.volume,
+    turnaround: defaultTurnaround ?? empty.turnaround,
+    notes: defaultNotes ?? "",
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const reset = () => {
     setStep(0);
     setDone(false);
     setErrors({});
-    setForm({ ...empty, service: defaultService ?? "" });
+    setForm({
+      ...empty,
+      service: defaultService ?? "",
+      volume: defaultVolume ?? empty.volume,
+      turnaround: defaultTurnaround ?? empty.turnaround,
+      notes: defaultNotes ?? "",
+    });
   };
 
   const set = <K extends keyof Form>(k: K, v: Form[K]) =>

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
 import { TrialDialog } from "@/components/site/TrialDialog";
+import { PricingCalculator } from "@/components/site/PricingCalculator";
 import {
   Accordion,
   AccordionContent,
@@ -142,6 +143,10 @@ function Pricing() {
 
                 <div className="mt-6 flex w-full flex-col gap-2">
                   <TrialDialog
+                    defaultService={c.slug}
+                    defaultVolume="1-10"
+                    defaultTurnaround="standard"
+                    defaultNotes={`Interested in ${c.title} (from $${c.price}/image).`}
                     title={`${c.title} — Get started`}
                     description="Send a sample image. We reply within 45 minutes with a firm per-image rate and a free trial edit."
                   >
@@ -178,6 +183,24 @@ function Pricing() {
           </p>
         </Container>
       </Section>
+
+      {/* Calculator */}
+      <Section className="pt-2 md:pt-4">
+        <Container>
+          <div className="mx-auto mb-8 max-w-2xl text-center">
+            <Eyebrow>Cost calculator</Eyebrow>
+            <h2 className="mt-4 font-display text-3xl md:text-4xl">
+              Estimate your batch in seconds.
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground md:text-base">
+              Pick a service, set the quantity and delivery time. We'll show a
+              live per-image rate and total — then prefill it into a quote.
+            </p>
+          </div>
+          <PricingCalculator />
+        </Container>
+      </Section>
+
 
       {/* FAQ */}
       <Section className="bg-muted/30">
