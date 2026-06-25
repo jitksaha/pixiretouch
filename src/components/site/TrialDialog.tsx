@@ -240,7 +240,7 @@ export function TrialDialog({
       message: [form.notes, form.company ? `Company: ${form.company}` : ""]
         .filter(Boolean)
         .join("\n\n"),
-      attachments: attachments.map((a) => a.path),
+      attachments: attachments.filter((a) => a.status === "done").map((a) => a.path),
     });
     setSubmitting(false);
     if (error) {
