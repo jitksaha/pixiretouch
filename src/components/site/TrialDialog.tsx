@@ -467,32 +467,80 @@ export function TrialDialog({
                       Up to {MAX_FILES} files · max {MAX_FILE_MB} MB each · JPG, PNG, PSD, TIFF, PDF, ZIP
                     </p>
 
-                    {attachments.length > 0 && (
-                      <ul className="space-y-1.5">
-                        {attachments.map((a, i) => (
-                          <li
-                            key={a.path}
-                            className="flex items-center justify-between gap-2 rounded-md border border-border bg-background px-3 py-2 text-xs"
-                          >
-                            <div className="flex min-w-0 items-center gap-2">
-                              <Paperclip className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                              <span className="truncate">{a.name}</span>
-                              <span className="shrink-0 text-muted-foreground">
-                                {(a.size / 1024 / 1024).toFixed(2)} MB
-                              </span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => void removeAttachment(i)}
-                              className="text-muted-foreground hover:text-destructive"
-                              aria-label={`Remove ${a.name}`}
-                            >
-                              <X className="h-3.5 w-3.5" />
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    {attachments.length > 0 && (() => {
+                      const total = attachments.length;
+                      const done = attachments.filter((a) => a.status === "done").length;
+                      const overall = Math.round(
+                        attachments.reduce((s, a) => s + a.progress, 0) / total,
+                      );
+                      return (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                            <span>{done} of {total} uploaded</span>
+                            <span>{overall}%</span>
+                          </div>
+                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                            <div
+                              className="h-full bg-primary transition-all duration-200"
+                              style={{ width: `${overall}%` }}
+                            />
+                          </div>
+                          <ul className="space-y-1.5">
+                            {attachments.map((a) => (
+                              <li
+                                key={a.id}
+                                className="rounded-md border border-border bg-background px-3 py-2 text-xs"
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex min-w-0 items-center gap-2">
+                                    <Paperclip className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                                    <span className="truncate">{a.name}</span>
+                                    <span className="shrink-0 text-muted-foreground">
+                                      {(a.size / 1024 / 1024).toFixed(2)} MB
+                                    </span>
+                                  </div>
+                                  <div className="flex shrink-0 items-center gap-2">
+                                    {a.status === "uploading" && (
+                                      <span className="text-muted-foreground">{a.progress}%</span>
+                                    )}
+                                    {a.status === "done" && (
+                                      <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary">
+                                        <Check className="h-3 w-3" /> Done
+                                      </span>
+                                    )}
+                                    {a.status === "error" && (
+                                      <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-destructive">
+                                        Failed
+                                      </span>
+                                    )}
+                                    <button
+                                      type="button"
+                                      onClick={() => void removeAttachment(a.id)}
+                                      className="text-muted-foreground hover:text-destructive"
+                                      aria-label={`Remove ${a.name}`}
+                                    >
+                                      <X className="h-3.5 w-3.5" />
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-muted">
+                                  <div
+                                    className={cn(
+                                      "h-full transition-all duration-200",
+                                      a.status === "error" ? "bg-destructive" : "bg-primary",
+                                    )}
+                                    style={{ width: `${a.progress}%` }}
+                                  />
+                                </div>
+                                {a.status === "error" && a.error && (
+                                  <p className="mt-1 text-[10px] text-destructive">{a.error}</p>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      );
+                    })()}
                   </div>
                 </>
               )}
