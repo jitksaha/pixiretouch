@@ -158,6 +158,13 @@ function StudioIntro() {
 
 /* ────────── Professional Photoshop Services (zigzag) ────────── */
 function ServicesZigzagBand() {
+  const { overrides } = useServiceOverrides();
+  const rows = ROWS.map((row) => {
+    const base = SERVICES.find((s) => s.slug === row.slug);
+    if (!base) return row;
+    const s = applyServiceOverride(base, overrides[row.slug]);
+    return { ...row, title: s.title, body: s.description, bullets: s.features };
+  });
   return (
     <Section id="services" className="bg-background">
       <Container>
@@ -170,10 +177,11 @@ function ServicesZigzagBand() {
         </div>
 
         <div className="mt-16 space-y-20 md:space-y-24">
-          {ROWS.map((row, i) => (
+          {rows.map((row, i) => (
             <ServiceZigzag key={row.slug} row={row} reverse={i % 2 === 1} />
           ))}
         </div>
+
 
         <div className="mt-16 text-center">
           <Button asChild size="lg" variant="outline" className="rounded-full px-7">
