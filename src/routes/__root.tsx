@@ -16,6 +16,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { StickyCTAs } from "@/components/site/StickyCTAs";
+import { RouteProgress } from "@/components/site/RouteProgress";
 import { BRAND } from "@/content/site";
 
 function NotFoundComponent() {
@@ -140,6 +141,7 @@ function RootComponent() {
   if (isAdmin) {
     return (
       <QueryClientProvider client={queryClient}>
+        <RouteProgress />
         <Outlet />
       </QueryClientProvider>
     );
@@ -147,6 +149,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <RouteProgress />
       <div className="flex min-h-screen flex-col">
         <Header />
         <main className="flex-1">
