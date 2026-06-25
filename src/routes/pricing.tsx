@@ -184,6 +184,24 @@ function Pricing() {
         </Container>
       </Section>
 
+      {/* Calculator */}
+      <Section className="pt-2 md:pt-4">
+        <Container>
+          <div className="mx-auto mb-8 max-w-2xl text-center">
+            <Eyebrow>Cost calculator</Eyebrow>
+            <h2 className="mt-4 font-display text-3xl md:text-4xl">
+              Estimate your batch in seconds.
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground md:text-base">
+              Pick a service, set the quantity and delivery time. We'll show a
+              live per-image rate and total — then prefill it into a quote.
+            </p>
+          </div>
+          <PricingCalculator />
+        </Container>
+      </Section>
+
+
       {/* FAQ */}
       <Section className="bg-muted/30">
         <Container className="grid gap-10 md:grid-cols-[1fr_1.6fr] md:items-start">
