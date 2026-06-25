@@ -43,9 +43,13 @@ type Form = {
 };
 
 type Attachment = {
+  id: string;
   name: string;
   size: number;
   path: string;
+  progress: number; // 0-100
+  status: "uploading" | "done" | "error";
+  error?: string;
 };
 
 const empty: Form = {
