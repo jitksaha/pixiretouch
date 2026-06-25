@@ -1,16 +1,30 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Check } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
 import { TrialDialog } from "@/components/site/TrialDialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { serviceImage } from "@/content/serviceImages";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
       { title: "Pricing — Pixi Retouch" },
-      { name: "description", content: "Transparent per-image pricing scaled by complexity and volume. Free trial, free quote within 45 minutes." },
+      {
+        name: "description",
+        content:
+          "Simple per-image pricing for clipping path, retouching, background removal, shadow, ghost mannequin and ecommerce edits. Free trial, quote in 45 minutes.",
+      },
       { property: "og:title", content: "Pricing — Pixi Retouch" },
-      { property: "og:description", content: "Transparent per-image pricing, free trial, free quote in 45 minutes." },
+      {
+        property: "og:description",
+        content:
+          "Stress-less pricing for pixel-perfect photo editing. Per-image rates start at $0.39.",
+      },
       { property: "og:url", content: "/pricing" },
     ],
     links: [{ rel: "canonical", href: "/pricing" }],
@@ -18,113 +32,199 @@ export const Route = createFileRoute("/pricing")({
   component: Pricing,
 });
 
-const TIERS = [
+const PRICE_CARDS: {
+  slug: string;
+  title: string;
+  price: string;
+}[] = [
+  { slug: "clipping-path", title: "Clipping Path Service", price: "0.39" },
+  { slug: "product-photo-retouching", title: "Retouching Service", price: "0.69" },
+  { slug: "background-removal", title: "Background Remove", price: "0.39" },
+  { slug: "shadow-creation", title: "Shadow Making", price: "0.39" },
+  { slug: "ghost-mannequin", title: "Ghost Mannequin", price: "0.79" },
+  { slug: "ecommerce-image-editing", title: "Ecommerce Image Edit", price: "0.39" },
+];
+
+const FAQS = [
   {
-    name: "Starter",
-    from: "$0.25",
-    sub: "per image",
-    desc: "Basic clipping path and background removal for small catalogs.",
-    features: ["Up to 500 images / month", "24-hour turnaround", "Basic clipping path", "Pure white or transparent background", "Email support"],
-    cta: "Start free trial",
+    q: "How can I send you the files?",
+    a: "Upload via WeTransfer, Dropbox, Google Drive or our own upload form — whatever is easiest. For very large batches we'll set up a shared folder for you.",
   },
   {
-    name: "Studio",
-    from: "$0.59",
-    sub: "per image",
-    desc: "Most ecommerce teams. Medium complexity, faster turnaround, mixed services.",
-    features: ["500 – 5,000 images / month", "12-hour turnaround", "Medium-complex paths & masking", "Shadow, retouching, color correction", "Dedicated account manager", "Priority support"],
-    featured: true,
-    cta: "Get a quote",
+    q: "What's your turnaround time?",
+    a: "Standard turnaround is 24 hours. Rush orders (4–8 hours) and overnight deliveries are available — tell us the deadline and we'll confirm.",
   },
   {
-    name: "Enterprise",
-    from: "Custom",
-    sub: "volume pricing",
-    desc: "High-volume catalogs, complex composites and dedicated capacity.",
-    features: ["5,000+ images / month", "4-hour turnaround", "Ghost mannequin, jewelry, composites", "Reserved retouchers", "SLA + NDA", "Slack / Teams integration"],
-    cta: "Talk to sales",
+    q: "Do you offer discount on bulk orders?",
+    a: "Yes. Volume pricing kicks in automatically past 500 images/month and scales aggressively at 1,000+. Send your monthly volume and we'll come back with a custom rate.",
+  },
+  {
+    q: "How to pay?",
+    a: "We accept bank transfer, PayPal, Wise, Payoneer and major credit cards. Net-15 terms available for monthly clients.",
+  },
+  {
+    q: "Do you offer a money-back guarantee?",
+    a: "Yes. If an image doesn't meet your brief we'll revise it free of charge or refund that image — no questions.",
+  },
+  {
+    q: "Is there a free trial?",
+    a: "Absolutely. Send 2 sample images and we'll edit them free so you can judge our quality before placing a paid order.",
   },
 ];
 
 function Pricing() {
   return (
     <>
-      <Section className="pt-20 md:pt-28">
-        <Container>
+      {/* Hero */}
+      <Section className="pt-16 md:pt-24">
+        <Container className="text-center">
           <Eyebrow>Pricing</Eyebrow>
-          <h1 className="mt-5 max-w-4xl font-display text-5xl md:text-7xl">
-            Per-image pricing. Honest, transparent, volume-aware.
+          <h1 className="mx-auto mt-5 max-w-4xl font-display text-4xl leading-tight md:text-6xl">
+            Stress less with simple pricing
+            <br />
+            and pixel-perfect photo edits.
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-            Every quote is custom because every batch is different. The tiers below are starting points — send a sample image and we'll come back with a firm per-image rate within 45 minutes.
+          <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground md:text-lg">
+            Per-image rates that scale with volume. Send a sample and we'll
+            confirm an exact price within 45 minutes.
           </p>
         </Container>
       </Section>
 
-      <Section>
+      {/* Service price grid */}
+      <Section className="pt-4 md:pt-6">
         <Container>
-          <div className="grid gap-6 lg:grid-cols-3">
-            {TIERS.map((t) => (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {PRICE_CARDS.map((c) => (
               <div
-                key={t.name}
-                className={`relative flex flex-col rounded-2xl border p-8 ${t.featured ? "border-foreground bg-foreground text-background shadow-lift" : "border-border bg-card"}`}
+                key={c.slug}
+                className="group flex flex-col items-center rounded-2xl border border-border bg-card p-6 text-center transition-all hover:-translate-y-1 hover:shadow-lift"
               >
-                {t.featured && (
-                  <span className="absolute -top-3 left-8 rounded-full bg-primary px-3 py-1 text-[10px] uppercase tracking-wider text-primary-foreground">Most popular</span>
-                )}
-                <h2 className="font-display text-2xl">{t.name}</h2>
-                <p className={`mt-2 text-sm ${t.featured ? "text-background/70" : "text-muted-foreground"}`}>{t.desc}</p>
-                <div className="mt-6 flex items-baseline gap-2">
-                  <span className="font-display text-5xl">{t.from}</span>
-                  <span className={`text-sm ${t.featured ? "text-background/60" : "text-muted-foreground"}`}>{t.sub}</span>
+                <div className="relative w-full overflow-hidden rounded-xl bg-muted">
+                  <div className="grid aspect-[2/1] grid-cols-2">
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={serviceImage(c.slug)}
+                        alt={`${c.title} before`}
+                        loading="lazy"
+                        className="h-full w-full object-cover grayscale"
+                      />
+                      <span className="absolute left-2 top-2 rounded-full bg-background/85 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-foreground">
+                        Before
+                      </span>
+                    </div>
+                    <div className="relative overflow-hidden border-l-2 border-background">
+                      <img
+                        src={serviceImage(c.slug)}
+                        alt={`${c.title} after`}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <span className="absolute right-2 top-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary-foreground">
+                        After
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <ul className="mt-8 flex-1 space-y-3 text-sm">
-                  {t.features.map((f) => (
-                    <li key={f} className="flex gap-3">
-                      <Check className={`mt-0.5 h-4 w-4 shrink-0 ${t.featured ? "text-primary" : "text-primary"}`} />
-                      <span className={t.featured ? "text-background/90" : ""}>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-10">
-                  <TrialDialog title={`${t.name} — ${t.cta}`} description="Tell us about your project — we reply within 45 minutes with a firm rate and a free trial edit.">
-                    <Button className="w-full" variant={t.featured ? "secondary" : "default"}>{t.cta}</Button>
+
+                <h3 className="mt-6 font-display text-lg uppercase tracking-wide text-primary">
+                  {c.title}
+                </h3>
+                <p className="mt-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  Start at
+                </p>
+                <div className="mt-2 flex items-start justify-center gap-1">
+                  <span className="mt-2 text-xl text-foreground">$</span>
+                  <span className="font-display text-5xl leading-none text-foreground">
+                    {c.price}
+                  </span>
+                </div>
+
+                <div className="mt-6 flex w-full flex-col gap-2">
+                  <TrialDialog
+                    title={`${c.title} — Get started`}
+                    description="Send a sample image. We reply within 45 minutes with a firm per-image rate and a free trial edit."
+                  >
+                    <Button className="w-full rounded-full" size="sm">
+                      Buy Now
+                    </Button>
                   </TrialDialog>
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="rounded-full text-xs text-muted-foreground"
+                  >
+                    <Link to="/services/$slug" params={{ slug: c.slug }}>
+                      View details →
+                    </Link>
+                  </Button>
                 </div>
               </div>
             ))}
           </div>
+
+          <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-muted-foreground">
+            Prices shown are starting per-image rates for basic complexity.
+            Final pricing depends on complexity, volume and turnaround.{" "}
+            <TrialDialog
+              title="Get a custom quote"
+              description="Tell us about your batch — we'll come back in 45 minutes with a firm rate."
+            >
+              <button className="font-medium text-foreground underline underline-offset-4 hover:text-primary">
+                Request a custom quote
+              </button>
+            </TrialDialog>
+          </p>
         </Container>
       </Section>
 
+      {/* FAQ */}
       <Section className="bg-muted/30">
-        <Container className="grid gap-12 md:grid-cols-2">
+        <Container className="grid gap-10 md:grid-cols-[1fr_1.6fr] md:items-start">
           <div>
-            <Eyebrow>What affects price</Eyebrow>
-            <h2 className="mt-4 font-display text-3xl md:text-4xl">Four variables. No hidden line items.</h2>
+            <p className="text-sm text-muted-foreground">Have Any Questions?</p>
+            <h2 className="mt-2 font-display text-4xl text-primary md:text-5xl">
+              FAQ's
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Let's check our frequently asked questions.
+            </p>
           </div>
-          <ul className="space-y-5">
-            {[
-              { t: "Complexity", b: "Basic, simple, medium, complex, super-complex paths and masks." },
-              { t: "Volume", b: "More images = lower per-image rate. We scale aggressively past 1,000." },
-              { t: "Turnaround", b: "Standard, rush, or scheduled. Rush is a small premium, not a multiplier." },
-              { t: "Service mix", b: "Multiple services on the same image are bundled, not stacked." },
-            ].map((x) => (
-              <li key={x.t} className="border-t border-border pt-5">
-                <div className="font-display text-xl">{x.t}</div>
-                <div className="mt-1 text-sm text-muted-foreground">{x.b}</div>
-              </li>
+
+          <Accordion type="single" collapsible className="w-full space-y-3">
+            {FAQS.map((f, i) => (
+              <AccordionItem
+                key={i}
+                value={`item-${i}`}
+                className="rounded-xl border border-border bg-background px-5"
+              >
+                <AccordionTrigger className="text-left text-sm font-medium md:text-base">
+                  {f.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-muted-foreground">
+                  {f.a}
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </ul>
+          </Accordion>
         </Container>
       </Section>
 
+      {/* CTA */}
       <Section ink>
         <Container className="text-center">
-          <h2 className="mx-auto max-w-3xl font-display text-4xl md:text-5xl">Get an exact per-image rate in 45 minutes.</h2>
+          <h2 className="mx-auto max-w-3xl font-display text-3xl md:text-5xl">
+            Get an exact per-image rate in 45 minutes.
+          </h2>
           <div className="mt-8">
-            <TrialDialog title="Get a quote" description="Tell us about your project — we reply within 45 minutes with a firm rate and a free trial edit.">
-              <Button size="lg" variant="secondary">Get a quote</Button>
+            <TrialDialog
+              title="Get a quote"
+              description="Tell us about your project — we reply within 45 minutes with a firm rate and a free trial edit."
+            >
+              <Button size="lg" variant="secondary">
+                Get a quote
+              </Button>
             </TrialDialog>
           </div>
         </Container>
