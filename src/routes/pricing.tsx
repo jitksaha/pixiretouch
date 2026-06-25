@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
 import { TrialDialog } from "@/components/site/TrialDialog";
+import { PricingCalculator } from "@/components/site/PricingCalculator";
 import {
   Accordion,
   AccordionContent,
