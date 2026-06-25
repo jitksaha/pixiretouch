@@ -142,6 +142,10 @@ function Pricing() {
 
                 <div className="mt-6 flex w-full flex-col gap-2">
                   <TrialDialog
+                    defaultService={c.slug}
+                    defaultVolume="1-10"
+                    defaultTurnaround="standard"
+                    defaultNotes={`Interested in ${c.title} (from $${c.price}/image).`}
                     title={`${c.title} — Get started`}
                     description="Send a sample image. We reply within 45 minutes with a firm per-image rate and a free trial edit."
                   >
