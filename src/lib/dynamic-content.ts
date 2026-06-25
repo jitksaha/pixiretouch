@@ -48,7 +48,6 @@ export function applyServiceOverride(base: Service, ov?: ServiceOverride): Servi
     title: ov.title || base.title,
     description: ov.description || base.description,
     short: ov.description || base.short,
-    pricing: ov.pricing || base.pricing,
     features: ov.features && ov.features.length ? ov.features : base.features,
   };
 }
