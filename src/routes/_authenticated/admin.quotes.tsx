@@ -245,6 +245,16 @@ function QuotesAdmin() {
                   </div>
                 )}
 
+                {selected.attachments && selected.attachments.length > 0 && (
+                  <div>
+                    <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                      Attachments ({selected.attachments.length})
+                    </p>
+                    <Attachments paths={selected.attachments} />
+                  </div>
+                )}
+
+
                 <div className="flex flex-wrap gap-2 border-t border-border/60 pt-4">
                   <Button asChild size="sm">
                     <a href={`mailto:${selected.email}?subject=${encodeURIComponent("Your quote request")}`}>
