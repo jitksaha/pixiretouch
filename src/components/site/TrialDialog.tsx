@@ -43,9 +43,13 @@ type Form = {
 };
 
 type Attachment = {
+  id: string;
   name: string;
   size: number;
   path: string;
+  progress: number; // 0-100
+  status: "uploading" | "done" | "error";
+  error?: string;
 };
 
 const empty: Form = {
@@ -136,6 +140,50 @@ export function TrialDialog({
   const set = <K extends keyof Form>(k: K, v: Form[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
+  const uploadOne = (file: File, id: string, path: string) =>
+    new Promise<void>((resolve) => {
+      const url = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/media/${path}`;
+      const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", url, true);
+      xhr.setRequestHeader("apikey", key);
+      xhr.setRequestHeader("Authorization", `Bearer ${key}`);
+      xhr.setRequestHeader("x-upsert", "false");
+      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+      xhr.upload.onprogress = (e) => {
+        if (!e.lengthComputable) return;
+        const pct = Math.round((e.loaded / e.total) * 100);
+        setAttachments((arr) =>
+          arr.map((a) => (a.id === id ? { ...a, progress: pct } : a)),
+        );
+      };
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          setAttachments((arr) =>
+            arr.map((a) =>
+              a.id === id ? { ...a, progress: 100, status: "done" } : a,
+            ),
+          );
+        } else {
+          setAttachments((arr) =>
+            arr.map((a) =>
+              a.id === id ? { ...a, status: "error", error: `HTTP ${xhr.status}` } : a,
+            ),
+          );
+        }
+        resolve();
+      };
+      xhr.onerror = () => {
+        setAttachments((arr) =>
+          arr.map((a) =>
+            a.id === id ? { ...a, status: "error", error: "Network error" } : a,
+          ),
+        );
+        resolve();
+      };
+      xhr.send(file);
+    });
+
   const handleFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
     const incoming = Array.from(files);
@@ -145,36 +193,40 @@ export function TrialDialog({
     }
     setUploading(true);
     const folder = `quote-uploads/${crypto.randomUUID()}`;
-    const next: Attachment[] = [];
+    const queued: Attachment[] = [];
     for (const file of incoming) {
       if (file.size > MAX_FILE_MB * 1024 * 1024) {
         toast.error(`${file.name} exceeds ${MAX_FILE_MB} MB.`);
         continue;
       }
-      const path = `${folder}/${Date.now()}-${slugifyName(file.name)}`;
-      const { error } = await supabase.storage.from("media").upload(path, file, {
-        contentType: file.type || "application/octet-stream",
-        upsert: false,
+      queued.push({
+        id: crypto.randomUUID(),
+        name: file.name,
+        size: file.size,
+        path: `${folder}/${Date.now()}-${slugifyName(file.name)}`,
+        progress: 0,
+        status: "uploading",
       });
-      if (error) {
-        toast.error(`Upload failed: ${file.name}`);
-        continue;
-      }
-      next.push({ name: file.name, size: file.size, path });
     }
-    if (next.length) {
-      setAttachments((a) => [...a, ...next]);
-      toast.success(`${next.length} file${next.length > 1 ? "s" : ""} uploaded`);
+    if (queued.length === 0) {
+      setUploading(false);
+      return;
     }
+    setAttachments((a) => [...a, ...queued]);
+    await Promise.all(
+      queued.map((q, i) => uploadOne(incoming[i], q.id, q.path)),
+    );
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const removeAttachment = async (idx: number) => {
-    const att = attachments[idx];
+  const removeAttachment = async (id: string) => {
+    const att = attachments.find((a) => a.id === id);
     if (!att) return;
-    setAttachments((a) => a.filter((_, i) => i !== idx));
-    await supabase.storage.from("media").remove([att.path]);
+    setAttachments((a) => a.filter((x) => x.id !== id));
+    if (att.status === "done") {
+      await supabase.storage.from("media").remove([att.path]);
+    }
   };
 
   const submit = async () => {
@@ -188,7 +240,7 @@ export function TrialDialog({
       message: [form.notes, form.company ? `Company: ${form.company}` : ""]
         .filter(Boolean)
         .join("\n\n"),
-      attachments: attachments.map((a) => a.path),
+      attachments: attachments.filter((a) => a.status === "done").map((a) => a.path),
     });
     setSubmitting(false);
     if (error) {
@@ -415,32 +467,80 @@ export function TrialDialog({
                       Up to {MAX_FILES} files · max {MAX_FILE_MB} MB each · JPG, PNG, PSD, TIFF, PDF, ZIP
                     </p>
 
-                    {attachments.length > 0 && (
-                      <ul className="space-y-1.5">
-                        {attachments.map((a, i) => (
-                          <li
-                            key={a.path}
-                            className="flex items-center justify-between gap-2 rounded-md border border-border bg-background px-3 py-2 text-xs"
-                          >
-                            <div className="flex min-w-0 items-center gap-2">
-                              <Paperclip className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                              <span className="truncate">{a.name}</span>
-                              <span className="shrink-0 text-muted-foreground">
-                                {(a.size / 1024 / 1024).toFixed(2)} MB
-                              </span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => void removeAttachment(i)}
-                              className="text-muted-foreground hover:text-destructive"
-                              aria-label={`Remove ${a.name}`}
-                            >
-                              <X className="h-3.5 w-3.5" />
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    {attachments.length > 0 && (() => {
+                      const total = attachments.length;
+                      const done = attachments.filter((a) => a.status === "done").length;
+                      const overall = Math.round(
+                        attachments.reduce((s, a) => s + a.progress, 0) / total,
+                      );
+                      return (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                            <span>{done} of {total} uploaded</span>
+                            <span>{overall}%</span>
+                          </div>
+                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                            <div
+                              className="h-full bg-primary transition-all duration-200"
+                              style={{ width: `${overall}%` }}
+                            />
+                          </div>
+                          <ul className="space-y-1.5">
+                            {attachments.map((a) => (
+                              <li
+                                key={a.id}
+                                className="rounded-md border border-border bg-background px-3 py-2 text-xs"
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex min-w-0 items-center gap-2">
+                                    <Paperclip className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                                    <span className="truncate">{a.name}</span>
+                                    <span className="shrink-0 text-muted-foreground">
+                                      {(a.size / 1024 / 1024).toFixed(2)} MB
+                                    </span>
+                                  </div>
+                                  <div className="flex shrink-0 items-center gap-2">
+                                    {a.status === "uploading" && (
+                                      <span className="text-muted-foreground">{a.progress}%</span>
+                                    )}
+                                    {a.status === "done" && (
+                                      <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary">
+                                        <Check className="h-3 w-3" /> Done
+                                      </span>
+                                    )}
+                                    {a.status === "error" && (
+                                      <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-destructive">
+                                        Failed
+                                      </span>
+                                    )}
+                                    <button
+                                      type="button"
+                                      onClick={() => void removeAttachment(a.id)}
+                                      className="text-muted-foreground hover:text-destructive"
+                                      aria-label={`Remove ${a.name}`}
+                                    >
+                                      <X className="h-3.5 w-3.5" />
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-muted">
+                                  <div
+                                    className={cn(
+                                      "h-full transition-all duration-200",
+                                      a.status === "error" ? "bg-destructive" : "bg-primary",
+                                    )}
+                                    style={{ width: `${a.progress}%` }}
+                                  />
+                                </div>
+                                {a.status === "error" && a.error && (
+                                  <p className="mt-1 text-[10px] text-destructive">{a.error}</p>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      );
+                    })()}
                   </div>
                 </>
               )}
