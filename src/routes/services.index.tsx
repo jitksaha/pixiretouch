@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
 import { Button } from "@/components/ui/button";
-import { SERVICES } from "@/content/site";
+import { TrialDialog } from "@/components/site/TrialDialog";
+import { ServiceZigzag, type ZigzagRow } from "@/components/site/ServiceZigzag";
+import { WhyUsGrid } from "@/components/site/WhyUsGrid";
+import { SERVICES, PORTFOLIO } from "@/content/site";
 import heroImg from "@/assets/services-hero.jpg";
-import clippingImg from "@/assets/service-clipping.jpg";
-import ghostImg from "@/assets/service-ghost.jpg";
-import jewelryImg from "@/assets/service-jewelry.jpg";
 
 export const Route = createFileRoute("/services/")({
   head: () => ({
@@ -23,194 +24,125 @@ export const Route = createFileRoute("/services/")({
   component: ServicesIndex,
 });
 
-const indexOf = (slug: string) => SERVICES.findIndex((s) => s.slug === slug);
-const num = (slug: string) => String(indexOf(slug) + 1).padStart(2, "0");
-const get = (slug: string) => SERVICES.find((s) => s.slug === slug)!;
+const svc = (slug: string) => SERVICES.find((s) => s.slug === slug)!;
+const port = (id: string) => PORTFOLIO.find((p) => p.id === id)!;
 
-const FEATURED = ["clipping-path", "background-removal", "ghost-mannequin", "jewelry-retouching"];
-const STRIP = ["shadow-creation", "product-photo-retouching", "color-correction", "photo-restoration"];
+const ZIGZAG: ZigzagRow[] = [
+  { slug: "clipping-path",            num: "01", title: svc("clipping-path").title,            body: svc("clipping-path").description,            bullets: svc("clipping-path").features,            before: port("p1").before, after: port("p1").after },
+  { slug: "background-removal",       num: "02", title: svc("background-removal").title,       body: svc("background-removal").description,       bullets: svc("background-removal").features,       before: port("p2").before, after: port("p2").after },
+  { slug: "product-photo-retouching", num: "03", title: "Photo Retouching",                     body: svc("product-photo-retouching").description, bullets: svc("product-photo-retouching").features, before: port("p5").before, after: port("p5").after },
+  { slug: "image-masking",            num: "04", title: svc("image-masking").title,             body: svc("image-masking").description,            bullets: svc("image-masking").features,            before: port("p8").before, after: port("p8").after },
+  { slug: "shadow-creation",          num: "05", title: "Shadow Making",                        body: svc("shadow-creation").description,          bullets: svc("shadow-creation").features,          before: port("p6").before, after: port("p6").after },
+  { slug: "ghost-mannequin",          num: "06", title: "Ghost Mannequin / Neck Joint",         body: svc("ghost-mannequin").description,          bullets: svc("ghost-mannequin").features,          before: port("p3").before, after: port("p3").after },
+  { slug: "jewelry-retouching",       num: "07", title: svc("jewelry-retouching").title,        body: svc("jewelry-retouching").description,       bullets: svc("jewelry-retouching").features,       before: port("p4").before, after: port("p4").after },
+  { slug: "ecommerce-image-editing",  num: "08", title: svc("ecommerce-image-editing").title,   body: svc("ecommerce-image-editing").description,  bullets: svc("ecommerce-image-editing").features,  before: port("p7").before, after: port("p7").after },
+];
+
+const COMPACT_SLUGS = ["color-correction", "photo-restoration", "photo-manipulation", "neck-joint", "image-enhancement"];
 
 function ServicesIndex() {
-  const clipping = get("clipping-path");
-  const bg = get("background-removal");
-  const ghost = get("ghost-mannequin");
-  const jewelry = get("jewelry-retouching");
-  const strip = STRIP.map(get).filter(Boolean);
-  const rest = SERVICES.filter((s) => !FEATURED.includes(s.slug) && !STRIP.includes(s.slug));
+  const compact = COMPACT_SLUGS.map(svc).filter(Boolean);
 
   return (
     <>
       {/* Hero */}
-      <Section className="pt-16 md:pt-20">
-        <Container>
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            <div>
-              <Eyebrow>Services</Eyebrow>
-              <h1 className="mt-5 font-display text-5xl leading-[1.05] md:text-6xl lg:text-7xl">
-                Thirteen specialist services. One studio.
-              </h1>
-              <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-                Every service below is delivered by senior retouchers, QC'd in three passes, and priced per image. Pick one or combine them into a full post-production pipeline.
-              </p>
+      <Section className="bg-[color:var(--surface-rose)] pt-16 pb-14 md:pt-20 md:pb-20">
+        <Container className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
+          <div>
+            <Eyebrow>Professional Photoshop services</Eyebrow>
+            <h1 className="mt-5 font-display text-4xl leading-[1.05] md:text-5xl lg:text-[3.6rem]">
+              Thirteen specialist services. One studio.
+            </h1>
+            <p className="mt-6 max-w-xl text-lg text-muted-foreground">
+              Every service is delivered by senior retouchers, QC'd in three passes, and priced per image. Pick one or combine them into a full post-production pipeline.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <TrialDialog>
+                <Button size="lg" className="rounded-full px-7">Get a quote <ArrowRight className="ml-1 h-4 w-4" /></Button>
+              </TrialDialog>
+              <Button asChild size="lg" variant="outline" className="rounded-full px-7">
+                <Link to="/pricing">View pricing</Link>
+              </Button>
             </div>
-
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-background">
-              <img
-                src={heroImg}
-                alt="High-end watch being edited with pen-tool vector paths"
-                width={1280}
-                height={896}
-                className="h-full w-full object-cover"
-              />
-              <svg
-                aria-hidden
-                className="pointer-events-none absolute inset-0 h-full w-full p-8 opacity-40"
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-              >
-                <path d="M6,6 L94,6 L94,94 L6,94 Z" fill="none" stroke="hsl(var(--primary))" strokeWidth="0.3" strokeDasharray="1.5" />
-                <circle cx="6" cy="6" r="0.9" fill="hsl(var(--primary))" />
-                <circle cx="94" cy="6" r="0.9" fill="hsl(var(--primary))" />
-                <circle cx="94" cy="94" r="0.9" fill="hsl(var(--primary))" />
-                <circle cx="6" cy="94" r="0.9" fill="hsl(var(--primary))" />
-              </svg>
-              <span className="absolute bottom-4 right-4 bg-ink px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-tighter text-ink-foreground">
-                High-end post production
-              </span>
-            </div>
+          </div>
+          <div className="relative">
+            <div className="absolute inset-0 -z-10 translate-x-6 translate-y-6 rounded-[2.5rem] bg-primary/15" />
+            <img
+              src={heroImg}
+              alt="High-end watch being edited with pen-tool vector paths"
+              width={1280}
+              height={896}
+              className="w-full rounded-3xl border border-border object-cover shadow-lift"
+            />
           </div>
         </Container>
       </Section>
 
-      {/* Architectural grid */}
-      <Section>
+      {/* Zigzag services */}
+      <Section className="bg-background">
         <Container>
-          <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-12">
-            {/* Clipping Path — wide feature */}
-            <Link
-              to="/services/$slug"
-              params={{ slug: clipping.slug }}
-              className="group flex flex-col gap-8 bg-background p-8 transition hover:bg-muted/30 md:col-span-8 lg:p-12 lg:flex-row"
-            >
-              <div className="flex-1">
-                <span className="mb-3 block font-mono text-xs font-semibold text-primary">{num(clipping.slug)}</span>
-                <h2 className="font-display text-3xl md:text-4xl">{clipping.title}</h2>
-                <p className="mt-4 max-w-lg text-base text-muted-foreground md:text-lg">{clipping.description}</p>
-                <ul className="mt-6 flex flex-wrap gap-2">
-                  {clipping.features.slice(0, 3).map((f) => (
-                    <li key={f} className="rounded-full border border-border px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{f}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="aspect-square w-full overflow-hidden rounded-lg bg-muted/40 lg:w-2/5">
-                <img src={clippingImg} alt={clipping.title} width={800} height={800} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              </div>
-            </Link>
+          <div className="space-y-20 md:space-y-24">
+            {ZIGZAG.map((row, i) => (
+              <ServiceZigzag key={row.slug} row={row} reverse={i % 2 === 1} />
+            ))}
+          </div>
+        </Container>
+      </Section>
 
-            {/* Background Removal — small swatch */}
-            <Link
-              to="/services/$slug"
-              params={{ slug: bg.slug }}
-              className="group flex flex-col bg-background p-8 transition hover:bg-muted/30 md:col-span-4 lg:p-10"
-            >
-              <span className="mb-3 block font-mono text-xs font-semibold text-primary">{num(bg.slug)}</span>
-              <h2 className="font-display text-2xl md:text-3xl">{bg.title}</h2>
-              <p className="mt-3 text-sm text-muted-foreground">{bg.short}</p>
-              <div className="mt-6 grid grid-cols-2 gap-2">
-                <div className="flex aspect-square items-center justify-center rounded-md border border-border bg-background font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  White
-                </div>
-                <div
-                  className="flex aspect-square items-center justify-center rounded-md border border-border font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(45deg, hsl(var(--muted)) 25%, transparent 25%), linear-gradient(-45deg, hsl(var(--muted)) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, hsl(var(--muted)) 75%), linear-gradient(-45deg, transparent 75%, hsl(var(--muted)) 75%)",
-                    backgroundSize: "12px 12px",
-                    backgroundPosition: "0 0, 0 6px, 6px -6px, -6px 0",
-                  }}
-                >
-                  Transparent
-                </div>
-              </div>
-            </Link>
-
-            {/* Ghost Mannequin — portrait card */}
-            <Link
-              to="/services/$slug"
-              params={{ slug: ghost.slug }}
-              className="group flex flex-col bg-background p-8 transition hover:bg-muted/30 md:col-span-4 lg:p-10"
-            >
-              <div className="mb-6 aspect-[3/4] overflow-hidden rounded-lg bg-muted/40">
-                <img src={ghostImg} alt={ghost.title} width={768} height={1024} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              </div>
-              <span className="mb-3 block font-mono text-xs font-semibold text-primary">{num(ghost.slug)}</span>
-              <h2 className="font-display text-2xl md:text-3xl">{ghost.title}</h2>
-              <p className="mt-3 text-sm text-muted-foreground">{ghost.short}</p>
-            </Link>
-
-            {/* Jewelry — wide reversed */}
-            <Link
-              to="/services/$slug"
-              params={{ slug: jewelry.slug }}
-              className="group flex flex-col gap-8 bg-background p-8 transition hover:bg-muted/30 md:col-span-8 lg:p-12 lg:flex-row-reverse lg:items-center"
-            >
-              <div className="aspect-square w-full overflow-hidden rounded-lg bg-muted/40 lg:w-1/2">
-                <img src={jewelryImg} alt={jewelry.title} width={1024} height={1024} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              </div>
-              <div className="flex-1">
-                <span className="mb-3 block font-mono text-xs font-semibold text-primary">{num(jewelry.slug)}</span>
-                <h2 className="font-display text-3xl md:text-4xl">{jewelry.title}</h2>
-                <p className="mt-4 max-w-md text-base text-muted-foreground md:text-lg">{jewelry.description}</p>
-                <span className="mt-8 inline-flex items-center gap-2 bg-ink px-5 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest text-ink-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                  View details
+      {/* Compact / additional services */}
+      <Section className="bg-[color:var(--surface-cream)]">
+        <Container>
+          <div className="mx-auto max-w-2xl text-center">
+            <Eyebrow className="justify-center">Also available</Eyebrow>
+            <h2 className="mt-4 font-display text-3xl md:text-4xl">More services to round out your post-production stack.</h2>
+          </div>
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {compact.map((s, i) => (
+              <Link
+                key={s.slug}
+                to="/services/$slug"
+                params={{ slug: s.slug }}
+                className="group flex flex-col gap-3 rounded-2xl border border-border bg-background p-7 transition hover:-translate-y-1 hover:shadow-lift"
+              >
+                <span className="font-mono text-xs font-semibold text-primary">
+                  {String(i + 9).padStart(2, "0")}
                 </span>
-              </div>
-            </Link>
+                <h3 className="font-display text-xl group-hover:text-primary">{s.title}</h3>
+                <p className="text-sm text-muted-foreground">{s.short}</p>
+                <span className="mt-auto inline-flex items-center gap-1 pt-3 text-sm font-medium text-primary">
+                  Read more <ArrowRight className="h-3.5 w-3.5" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </Container>
+      </Section>
 
-            {/* Strip row */}
-            <div className="grid gap-10 bg-background p-8 md:col-span-12 md:grid-cols-2 lg:grid-cols-4 lg:p-12">
-              {strip.map((s) => (
-                <Link
-                  key={s.slug}
-                  to="/services/$slug"
-                  params={{ slug: s.slug }}
-                  className="group flex flex-col"
-                >
-                  <span className="mb-3 font-mono text-xs font-semibold text-primary">{num(s.slug)}</span>
-                  <h3 className="font-display text-xl group-hover:text-primary">{s.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{s.short}</p>
-                </Link>
-              ))}
-            </div>
-
-            {/* Remaining services — same compact strip pattern */}
-            {rest.length > 0 && (
-              <div className="grid gap-10 bg-background p-8 md:col-span-12 md:grid-cols-2 lg:grid-cols-4 lg:p-12">
-                {rest.map((s) => (
-                  <Link
-                    key={s.slug}
-                    to="/services/$slug"
-                    params={{ slug: s.slug }}
-                    className="group flex flex-col"
-                  >
-                    <span className="mb-3 font-mono text-xs font-semibold text-primary">{num(s.slug)}</span>
-                    <h3 className="font-display text-xl group-hover:text-primary">{s.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">{s.short}</p>
-                  </Link>
-                ))}
-              </div>
-            )}
+      {/* Why us */}
+      <Section className="bg-[color:var(--surface-sand)]">
+        <Container>
+          <div className="mx-auto max-w-2xl text-center">
+            <Eyebrow className="justify-center">Why Pixi Retouch</Eyebrow>
+            <h2 className="mt-4 font-display text-4xl md:text-5xl">A studio you can hand the whole catalog to.</h2>
+          </div>
+          <div className="mt-12">
+            <WhyUsGrid />
           </div>
         </Container>
       </Section>
 
       {/* CTA */}
-      <Section ink>
+      <Section ink className="py-14 md:py-20">
         <Container className="text-center">
-          <h2 className="mx-auto max-w-3xl font-display text-4xl md:text-6xl">Not sure which service you need?</h2>
+          <h2 className="mx-auto max-w-3xl font-display text-3xl md:text-5xl">Not sure which service you need?</h2>
           <p className="mx-auto mt-4 max-w-xl text-ink-foreground/70">Send a sample image. We'll recommend the right combination and quote it free.</p>
-          <div className="mt-8">
-            <Button asChild size="lg" variant="secondary"><Link to="/contact">Get a recommendation</Link></Button>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <TrialDialog>
+              <Button size="lg" variant="secondary" className="rounded-full px-7">Get a recommendation</Button>
+            </TrialDialog>
+            <Button asChild size="lg" variant="outline" className="rounded-full px-7 border-ink-foreground/30 bg-transparent text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground">
+              <Link to="/sample">See the work</Link>
+            </Button>
           </div>
         </Container>
       </Section>

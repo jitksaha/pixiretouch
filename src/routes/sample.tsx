@@ -1,11 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { ArrowRight } from "lucide-react";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { TrialDialog } from "@/components/site/TrialDialog";
+import { BeforeAfter } from "@/components/site/BeforeAfter";
 import { cn } from "@/lib/utils";
 import { PORTFOLIO_CATEGORIES, type PortfolioItem } from "@/content/site";
 import { useDynamicPortfolio } from "@/lib/dynamic-content";
-
 
 export const Route = createFileRoute("/sample")({
   head: () => ({
@@ -23,33 +25,51 @@ export const Route = createFileRoute("/sample")({
 
 function Sample() {
   const [cat, setCat] = useState<string>("All");
-  const [open, setOpen] = useState<PortfolioItem | null>(null);
   const { items: all } = useDynamicPortfolio();
   const items = useMemo(
-    () => (cat === "All" ? all : all.filter((p) => p.category === cat)),
+    () => (cat === "All" ? all : all.filter((p: PortfolioItem) => p.category === cat)),
     [cat, all],
   );
 
-
   return (
     <>
-      <Section className="pt-20 md:pt-28">
+      {/* Hero */}
+      <Section className="bg-[color:var(--surface-rose)] pt-16 pb-12 md:pt-20 md:pb-16">
         <Container>
-          <Eyebrow>Portfolio</Eyebrow>
-          <h1 className="mt-5 max-w-4xl font-display text-5xl md:text-7xl">A small selection of recent work.</h1>
-          <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-            Most of our work is under NDA. The pieces below are samples we're cleared to show — filter by service to see the technique.
-          </p>
+          <div className="grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
+            <div>
+              <Eyebrow>Portfolio</Eyebrow>
+              <h1 className="mt-4 max-w-3xl font-display text-4xl leading-[1.05] md:text-6xl">
+                Drag, compare, judge for yourself.
+              </h1>
+              <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
+                Most of our work is under NDA. Below is a sample we're cleared to show — filter by service, drag any slider to see the edit.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3 lg:justify-end">
+              <TrialDialog>
+                <Button size="lg" className="rounded-full px-7">Get a quote <ArrowRight className="ml-1 h-4 w-4" /></Button>
+              </TrialDialog>
+              <Button asChild size="lg" variant="outline" className="rounded-full px-7">
+                <Link to="/services">Browse services</Link>
+              </Button>
+            </div>
+          </div>
+        </Container>
+      </Section>
 
-          <div className="mt-12 flex flex-wrap gap-2">
+      {/* Filter chips */}
+      <div className="sticky top-12 z-30 border-y border-border bg-background/95 py-3 backdrop-blur">
+        <Container>
+          <div className="flex flex-wrap gap-2">
             {PORTFOLIO_CATEGORIES.map((c) => (
               <button
                 key={c}
                 onClick={() => setCat(c)}
                 className={cn(
-                  "rounded-full border px-4 py-2 text-sm transition",
+                  "rounded-full border px-4 py-1.5 text-sm transition",
                   cat === c
-                    ? "border-foreground bg-foreground text-background"
+                    ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -58,50 +78,48 @@ function Sample() {
             ))}
           </div>
         </Container>
-      </Section>
+      </div>
 
-      <Section className="pt-0">
+      {/* Grid of before/after sliders */}
+      <Section className="bg-[color:var(--surface-cream)] py-14 md:py-20">
         <Container>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2">
             {items.map((p) => (
-              <button
+              <figure
                 key={p.id}
-                onClick={() => setOpen(p)}
-                className="group overflow-hidden rounded-xl border border-border bg-card text-left"
+                className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft"
               >
-                <div className="aspect-[4/3] overflow-hidden">
-                  <img src={p.after} alt={p.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
-                </div>
-                <div className="flex items-center justify-between p-4">
-                  <span className="text-sm font-medium">{p.title}</span>
-                  <span className="text-xs text-muted-foreground">{p.category}</span>
-                </div>
-              </button>
+                <BeforeAfter before={p.before} after={p.after} className="aspect-[4/3]" />
+                <figcaption className="flex items-center justify-between gap-3 p-5">
+                  <div>
+                    <div className="font-display text-lg">{p.title}</div>
+                    <div className="text-xs uppercase tracking-wider text-muted-foreground">{p.category}</div>
+                  </div>
+                  <span className="rounded-full bg-[color:var(--surface-rose)] px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-primary">
+                    Before · After
+                  </span>
+                </figcaption>
+              </figure>
             ))}
           </div>
+
+          {items.length === 0 && (
+            <p className="py-16 text-center text-muted-foreground">No samples in this category yet.</p>
+          )}
         </Container>
       </Section>
 
-      <Dialog open={!!open} onOpenChange={(v) => !v && setOpen(null)}>
-        <DialogContent className="max-w-5xl">
-          <DialogTitle className="font-display text-2xl">{open?.title}</DialogTitle>
-          {open && (
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Figure label="Before" src={open.before} />
-              <Figure label="After" src={open.after} />
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* CTA */}
+      <Section ink className="py-14 md:py-20">
+        <Container className="grid items-center gap-6 text-center md:grid-cols-[1.5fr_1fr] md:text-left">
+          <h2 className="font-display text-3xl md:text-5xl">Want this finish on your own catalog?</h2>
+          <div className="flex flex-wrap justify-center gap-3 md:justify-end">
+            <TrialDialog>
+              <Button size="lg" variant="secondary" className="rounded-full px-7">Send 2 sample images</Button>
+            </TrialDialog>
+          </div>
+        </Container>
+      </Section>
     </>
-  );
-}
-
-function Figure({ label, src }: { label: string; src: string }) {
-  return (
-    <figure className="overflow-hidden rounded-lg border border-border">
-      <div className="bg-muted px-3 py-2 text-xs uppercase tracking-wider text-muted-foreground">{label}</div>
-      <img src={src} alt={label} className="aspect-[4/3] w-full object-cover" />
-    </figure>
   );
 }
