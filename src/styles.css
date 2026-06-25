@@ -34,6 +34,10 @@
   --color-ink-foreground: var(--ink-foreground);
   --color-cream: var(--cream);
   --color-line: var(--line);
+  --color-surface-cream: var(--surface-cream);
+  --color-surface-rose: var(--surface-rose);
+  --color-surface-blush: var(--surface-blush);
+  --color-surface-sand: var(--surface-sand);
 
   --font-display: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
