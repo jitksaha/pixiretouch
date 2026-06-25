@@ -124,7 +124,7 @@ function StudioIntro() {
         <div className="relative">
           <div className="absolute inset-0 -z-10 rounded-[2.5rem] bg-[color:var(--surface-blush)]" />
           <img
-            src="/src/assets/studio-illustration.png"
+            src={studioImg}
             alt="Photo editing studio illustration"
             width={1024}
             height={1024}
