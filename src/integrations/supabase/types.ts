@@ -169,6 +169,7 @@ export type Database = {
       }
       quote_requests: {
         Row: {
+          attachments: string[]
           created_at: string
           email: string
           id: string
@@ -182,6 +183,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          attachments?: string[]
           created_at?: string
           email: string
           id?: string
@@ -195,6 +197,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          attachments?: string[]
           created_at?: string
           email?: string
           id?: string

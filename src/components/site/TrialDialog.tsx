@@ -1,6 +1,6 @@
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { z } from "zod";
-import { ArrowLeft, ArrowRight, Check, HelpCircle, Upload } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, HelpCircle, Loader2, Paperclip, Upload, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -29,6 +29,8 @@ import {
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 import { QUOTE_SERVICES, TURNAROUNDS, FAQS } from "@/content/site";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 type Form = {
   service: string;
@@ -38,6 +40,12 @@ type Form = {
   name: string;
   email: string;
   company: string;
+};
+
+type Attachment = {
+  name: string;
+  size: number;
+  path: string;
 };
 
 const empty: Form = {
@@ -57,6 +65,9 @@ const VOLUMES = [
   { value: "1000+", label: "1,000+ / ongoing" },
 ];
 
+const MAX_FILE_MB = 25;
+const MAX_FILES = 10;
+
 const stepSchemas = [
   z.object({ service: z.string().min(1, "Choose a service"), turnaround: z.string().min(1) }),
   z.object({ volume: z.string().min(1), notes: z.string().max(1000).optional().default("") }),
@@ -68,6 +79,10 @@ const stepSchemas = [
 ];
 
 const STEPS = ["Project", "Volume", "Contact"] as const;
+
+function slugifyName(n: string) {
+  return n.replace(/[^a-zA-Z0-9._-]+/g, "-").slice(-80);
+}
 
 export function TrialDialog({
   children,
@@ -89,6 +104,10 @@ export function TrialDialog({
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState<Form>({
     ...empty,
     service: defaultService ?? "",
@@ -102,6 +121,9 @@ export function TrialDialog({
     setStep(0);
     setDone(false);
     setErrors({});
+    setAttachments([]);
+    setSubmitting(false);
+    setUploading(false);
     setForm({
       ...empty,
       service: defaultService ?? "",
@@ -113,6 +135,68 @@ export function TrialDialog({
 
   const set = <K extends keyof Form>(k: K, v: Form[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
+
+  const handleFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const incoming = Array.from(files);
+    if (attachments.length + incoming.length > MAX_FILES) {
+      toast.error(`Up to ${MAX_FILES} files per request.`);
+      return;
+    }
+    setUploading(true);
+    const folder = `quote-uploads/${crypto.randomUUID()}`;
+    const next: Attachment[] = [];
+    for (const file of incoming) {
+      if (file.size > MAX_FILE_MB * 1024 * 1024) {
+        toast.error(`${file.name} exceeds ${MAX_FILE_MB} MB.`);
+        continue;
+      }
+      const path = `${folder}/${Date.now()}-${slugifyName(file.name)}`;
+      const { error } = await supabase.storage.from("media").upload(path, file, {
+        contentType: file.type || "application/octet-stream",
+        upsert: false,
+      });
+      if (error) {
+        toast.error(`Upload failed: ${file.name}`);
+        continue;
+      }
+      next.push({ name: file.name, size: file.size, path });
+    }
+    if (next.length) {
+      setAttachments((a) => [...a, ...next]);
+      toast.success(`${next.length} file${next.length > 1 ? "s" : ""} uploaded`);
+    }
+    setUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const removeAttachment = async (idx: number) => {
+    const att = attachments[idx];
+    if (!att) return;
+    setAttachments((a) => a.filter((_, i) => i !== idx));
+    await supabase.storage.from("media").remove([att.path]);
+  };
+
+  const submit = async () => {
+    setSubmitting(true);
+    const { error } = await supabase.from("quote_requests").insert({
+      name: form.name,
+      email: form.email,
+      service: form.service,
+      quantity: form.volume,
+      turnaround: form.turnaround,
+      message: [form.notes, form.company ? `Company: ${form.company}` : ""]
+        .filter(Boolean)
+        .join("\n\n"),
+      attachments: attachments.map((a) => a.path),
+    });
+    setSubmitting(false);
+    if (error) {
+      toast.error("Could not submit. Please try again.");
+      return;
+    }
+    setDone(true);
+  };
 
   const next = () => {
     const parsed = stepSchemas[step].safeParse(form);
@@ -126,7 +210,7 @@ export function TrialDialog({
     }
     setErrors({});
     if (step === STEPS.length - 1) {
-      setDone(true);
+      void submit();
     } else {
       setStep((s) => s + 1);
     }
@@ -153,9 +237,10 @@ export function TrialDialog({
               <Check className="h-7 w-7" />
             </div>
             <DialogHeader className="mt-5">
-              <DialogTitle className="font-display text-2xl">Trial request received</DialogTitle>
+              <DialogTitle className="font-display text-2xl">Request received</DialogTitle>
               <DialogDescription className="mt-2">
-                A producer will email <span className="text-foreground font-medium">{form.email}</span> within 45 minutes with upload instructions for your 2 free trial images.
+                A producer will email <span className="text-foreground font-medium">{form.email}</span> within 45 minutes
+                {attachments.length > 0 ? ` — we've received your ${attachments.length} file${attachments.length > 1 ? "s" : ""}.` : "."}
               </DialogDescription>
             </DialogHeader>
             <Button className="mt-6 w-full" onClick={() => setOpen(false)}>
@@ -295,9 +380,67 @@ export function TrialDialog({
                     />
                   </div>
 
-                  <div className="flex items-center gap-2 rounded-md border border-dashed border-border bg-muted/40 px-3 py-3 text-xs text-muted-foreground">
-                    <Upload className="h-4 w-4" />
-                    You can attach the 2 trial images by reply once we email you.
+                  <div className="space-y-2">
+                    <Label className="text-xs uppercase tracking-wider text-muted-foreground">
+                      Attach sample images <span className="opacity-60">(optional)</span>
+                    </Label>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      accept="image/*,.psd,.tif,.tiff,.pdf,.zip"
+                      className="hidden"
+                      onChange={(e) => void handleFiles(e.target.files)}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading || attachments.length >= MAX_FILES}
+                      className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-border bg-muted/40 px-3 py-4 text-sm text-muted-foreground transition-colors hover:border-foreground hover:bg-muted disabled:opacity-50"
+                    >
+                      {uploading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" /> Uploading…
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="h-4 w-4" />
+                          <span>
+                            Click to upload <span className="text-foreground font-medium">single or multiple files</span>
+                          </span>
+                        </>
+                      )}
+                    </button>
+                    <p className="text-[11px] text-muted-foreground">
+                      Up to {MAX_FILES} files · max {MAX_FILE_MB} MB each · JPG, PNG, PSD, TIFF, PDF, ZIP
+                    </p>
+
+                    {attachments.length > 0 && (
+                      <ul className="space-y-1.5">
+                        {attachments.map((a, i) => (
+                          <li
+                            key={a.path}
+                            className="flex items-center justify-between gap-2 rounded-md border border-border bg-background px-3 py-2 text-xs"
+                          >
+                            <div className="flex min-w-0 items-center gap-2">
+                              <Paperclip className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                              <span className="truncate">{a.name}</span>
+                              <span className="shrink-0 text-muted-foreground">
+                                {(a.size / 1024 / 1024).toFixed(2)} MB
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => void removeAttachment(i)}
+                              className="text-muted-foreground hover:text-destructive"
+                              aria-label={`Remove ${a.name}`}
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </>
               )}
@@ -351,6 +494,13 @@ export function TrialDialog({
                     )}
                   </div>
 
+                  {attachments.length > 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      <Paperclip className="mr-1 inline h-3 w-3" />
+                      {attachments.length} file{attachments.length > 1 ? "s" : ""} will be sent with this request.
+                    </p>
+                  )}
+
               <p className="text-xs text-muted-foreground">
                     No card. No commitment. We reply within 45 minutes during working hours.
                   </p>
@@ -383,16 +533,24 @@ export function TrialDialog({
                 variant="ghost"
                 size="sm"
                 onClick={back}
-                disabled={step === 0}
+                disabled={step === 0 || submitting}
               >
                 <ArrowLeft className="mr-1 h-4 w-4" /> Back
               </Button>
               <div className="text-xs text-muted-foreground">
                 Step {step + 1} of {STEPS.length}
               </div>
-              <Button type="button" size="sm" onClick={next}>
-                {step === STEPS.length - 1 ? "Submit" : "Continue"}
-                <ArrowRight className="ml-1 h-4 w-4" />
+              <Button type="button" size="sm" onClick={next} disabled={submitting || uploading}>
+                {submitting ? (
+                  <>
+                    <Loader2 className="mr-1 h-4 w-4 animate-spin" /> Submitting…
+                  </>
+                ) : (
+                  <>
+                    {step === STEPS.length - 1 ? "Submit" : "Continue"}
+                    <ArrowRight className="ml-1 h-4 w-4" />
+                  </>
+                )}
               </Button>
             </div>
           </>
