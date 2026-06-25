@@ -30,6 +30,7 @@ type Quote = {
   message: string | null;
   status: string;
   created_at: string;
+  attachments: string[] | null;
 };
 
 const STATUS = [
