@@ -7,6 +7,7 @@ import { TrialDialog } from "@/components/site/TrialDialog";
 import { SERVICES, PROCESS, TESTIMONIALS, PORTFOLIO, type PortfolioItem } from "@/content/site";
 import { serviceImage } from "@/content/serviceImages";
 import { BeforeAfter } from "@/components/site/BeforeAfter";
+import { useServiceOverrides, applyServiceOverride } from "@/lib/dynamic-content";
 
 const PROCESS_ICONS = [Send, Sparkles, Upload, FileCheck];
 const FORMATS = ["JPG", "PNG", "TIFF", "PSD", "WEBP", "RAW"];
