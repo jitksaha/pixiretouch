@@ -45,26 +45,44 @@ function pairsForService(slug: string): PortfolioItem[] {
 }
 
 export const Route = createFileRoute("/services/$slug")({
-  loader: ({ params }) => {
-    const service = SERVICES.find((s) => s.slug === params.slug);
-    if (!service) throw notFound();
-    return service;
+  loader: async ({ params }) => {
+    const base = SERVICES.find((s) => s.slug === params.slug);
+    if (!base) throw notFound();
+    const { data } = await supabase
+      .from("services_content")
+      .select("title,description,features")
+      .eq("slug", params.slug)
+      .maybeSingle();
+    return {
+      ...base,
+      title: data?.title || base.title,
+      description: data?.description || base.description,
+      short: data?.description || base.short,
+      features: data?.features && data.features.length ? data.features : base.features,
+    };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     const s = loaderData;
     if (!s) return { meta: [] };
-    const hero = serviceImage(s.slug);
+    const hero = serviceImage(params.slug);
+    const url = `${SITE_URL}/services/${params.slug}`;
+    const ogImage = hero.startsWith("http") ? hero : `${SITE_URL}${hero}`;
+    const title = `${s.title} — ${BRAND.name}`;
     return {
       meta: [
-        { title: `${s.title} — Pixi Retouch` },
-        { name: "description", content: s.short },
-        { property: "og:title", content: `${s.title} — Pixi Retouch` },
-        { property: "og:description", content: s.short },
-        { property: "og:url", content: `/services/${s.slug}` },
-        { property: "og:image", content: hero },
-        { name: "twitter:image", content: hero },
+        { title },
+        { name: "description", content: s.description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: s.description },
+        { property: "og:type", content: "article" },
+        { property: "og:url", content: url },
+        { property: "og:image", content: ogImage },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: s.description },
+        { name: "twitter:image", content: ogImage },
       ],
-      links: [{ rel: "canonical", href: `/services/${s.slug}` }],
+      links: [{ rel: "canonical", href: url }],
       scripts: [
         {
           type: "application/ld+json",
@@ -73,8 +91,38 @@ export const Route = createFileRoute("/services/$slug")({
             "@type": "Service",
             name: s.title,
             description: s.description,
-            image: hero,
-            provider: { "@type": "Organization", name: "Pixi Retouch" },
+            image: ogImage,
+            url,
+            serviceType: s.title,
+            areaServed: "Worldwide",
+            provider: {
+              "@type": "Organization",
+              name: BRAND.name,
+              url: SITE_URL,
+              email: BRAND.email,
+            },
+            hasOfferCatalog: s.features?.length
+              ? {
+                  "@type": "OfferCatalog",
+                  name: `${s.title} deliverables`,
+                  itemListElement: s.features.map((f: string) => ({
+                    "@type": "Offer",
+                    itemOffered: { "@type": "Service", name: f },
+                  })),
+                }
+              : undefined,
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+              { "@type": "ListItem", position: 2, name: "Services", item: `${SITE_URL}/services` },
+              { "@type": "ListItem", position: 3, name: s.title, item: url },
+            ],
           }),
         },
         ...(s.faqs.length
@@ -83,7 +131,7 @@ export const Route = createFileRoute("/services/$slug")({
               children: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
-                mainEntity: s.faqs.map((f) => ({
+                mainEntity: s.faqs.map((f: { q: string; a: string }) => ({
                   "@type": "Question",
                   name: f.q,
                   acceptedAnswer: { "@type": "Answer", text: f.a },
