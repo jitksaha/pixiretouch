@@ -53,12 +53,15 @@ export const Route = createFileRoute("/services/$slug")({
       .select("title,description,features")
       .eq("slug", params.slug)
       .maybeSingle();
+    const dbFeatures = Array.isArray(data?.features)
+      ? (data!.features as unknown[]).filter((x): x is string => typeof x === "string")
+      : null;
     return {
       ...base,
       title: data?.title || base.title,
       description: data?.description || base.description,
       short: data?.description || base.short,
-      features: data?.features && data.features.length ? data.features : base.features,
+      features: dbFeatures && dbFeatures.length ? dbFeatures : base.features,
     };
   },
   head: ({ loaderData, params }) => {
