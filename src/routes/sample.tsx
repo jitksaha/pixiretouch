@@ -6,20 +6,81 @@ import { Button } from "@/components/ui/button";
 import { TrialDialog } from "@/components/site/TrialDialog";
 import { BeforeAfter } from "@/components/site/BeforeAfter";
 import { cn } from "@/lib/utils";
-import { PORTFOLIO_CATEGORIES, type PortfolioItem } from "@/content/site";
+import { PORTFOLIO, PORTFOLIO_CATEGORIES, BRAND, type PortfolioItem } from "@/content/site";
+import { supabase } from "@/integrations/supabase/client";
 import { useDynamicPortfolio } from "@/lib/dynamic-content";
 
+const SITE_URL = "https://pixiretouch.lovable.app";
+
 export const Route = createFileRoute("/sample")({
-  head: () => ({
-    meta: [
-      { title: "Sample Work — Pixi Retouch" },
-      { name: "description", content: "Selected before/after retouching work for ecommerce, fashion, jewelry and product brands." },
-      { property: "og:title", content: "Sample Work — Pixi Retouch" },
-      { property: "og:description", content: "Selected retouching work from the Pixi Retouch studio." },
-      { property: "og:url", content: "/sample" },
-    ],
-    links: [{ rel: "canonical", href: "/sample" }],
-  }),
+  loader: async (): Promise<PortfolioItem[]> => {
+    const { data } = await supabase
+      .from("portfolio_items")
+      .select("id,title,category,before_image,after_image")
+      .eq("published", true)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false });
+    const mapped: PortfolioItem[] = (data ?? []).map((r) => ({
+      id: r.id,
+      title: r.title,
+      category: r.category ?? "Studio",
+      before: r.before_image,
+      after: r.after_image,
+    }));
+    return mapped.length ? mapped : PORTFOLIO;
+  },
+  head: ({ loaderData }) => {
+    const items = loaderData ?? [];
+    const url = `${SITE_URL}/sample`;
+    const title = `Portfolio — Before & After Retouching | ${BRAND.name}`;
+    const description = `Selected before/after retouching work for ecommerce, fashion, jewelry and product brands by ${BRAND.name}.`;
+    const ogImage = items[0]?.after ?? `${SITE_URL}/og-default.jpg`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: url },
+        { property: "og:image", content: ogImage },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        { name: "twitter:image", content: ogImage },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ImageGallery",
+            name: title,
+            description,
+            url,
+            image: items.slice(0, 24).map((p) => ({
+              "@type": "ImageObject",
+              contentUrl: p.after,
+              name: p.title,
+              caption: `${p.title} — ${p.category}`,
+            })),
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+              { "@type": "ListItem", position: 2, name: "Portfolio", item: url },
+            ],
+          }),
+        },
+      ],
+    };
+  },
   component: Sample,
 });
 
