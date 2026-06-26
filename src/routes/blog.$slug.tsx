@@ -1,29 +1,118 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Container, Section } from "@/components/site/Container";
 import { Button } from "@/components/ui/button";
-import { BLOG } from "@/content/site";
+import { BLOG, BRAND } from "@/content/site";
+import { supabase } from "@/integrations/supabase/client";
 import { useDynamicBlog, useDynamicBlogPost } from "@/lib/dynamic-content";
 
+const SITE_URL = "https://pixiretouch.lovable.app";
+const DEFAULT_COVER = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1600&q=80";
+
+type LoaderPost = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  cover: string;
+  category: string;
+  author: string;
+  date: string;
+};
+
 export const Route = createFileRoute("/blog/$slug")({
-  head: ({ params }) => {
-    const p = BLOG.find((b) => b.slug === params.slug);
-    if (!p) {
+  loader: async ({ params }): Promise<LoaderPost | null> => {
+    const { data } = await supabase
+      .from("blog_posts")
+      .select("slug,title,excerpt,cover_image,published_at,created_at")
+      .eq("slug", params.slug)
+      .eq("published", true)
+      .maybeSingle();
+    if (data) {
       return {
-        meta: [{ title: "Post — Pixi Retouch" }],
-        links: [{ rel: "canonical", href: `/blog/${params.slug}` }],
+        slug: data.slug,
+        title: data.title,
+        excerpt: data.excerpt ?? "",
+        cover: data.cover_image || DEFAULT_COVER,
+        category: "Studio",
+        author: BRAND.name,
+        date: data.published_at ?? data.created_at,
       };
     }
+    const fallback = BLOG.find((b) => b.slug === params.slug);
+    return fallback
+      ? {
+          slug: fallback.slug,
+          title: fallback.title,
+          excerpt: fallback.excerpt,
+          cover: fallback.cover,
+          category: fallback.category,
+          author: fallback.author,
+          date: fallback.date,
+        }
+      : null;
+  },
+  head: ({ params, loaderData }) => {
+    const url = `${SITE_URL}/blog/${params.slug}`;
+    if (!loaderData) {
+      return {
+        meta: [{ title: `Post — ${BRAND.name}` }],
+        links: [{ rel: "canonical", href: url }],
+      };
+    }
+    const p = loaderData;
+    const title = `${p.title} — ${BRAND.name}`;
+    const ogImage = p.cover.startsWith("http") ? p.cover : `${SITE_URL}${p.cover}`;
     return {
       meta: [
-        { title: `${p.title} — Pixi Retouch` },
+        { title },
         { name: "description", content: p.excerpt },
+        { name: "author", content: p.author },
+        { property: "article:published_time", content: p.date },
+        { property: "article:section", content: p.category },
         { property: "og:title", content: p.title },
         { property: "og:description", content: p.excerpt },
         { property: "og:type", content: "article" },
-        { property: "og:image", content: p.cover },
-        { property: "og:url", content: `/blog/${params.slug}` },
+        { property: "og:url", content: url },
+        { property: "og:image", content: ogImage },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: p.title },
+        { name: "twitter:description", content: p.excerpt },
+        { name: "twitter:image", content: ogImage },
       ],
-      links: [{ rel: "canonical", href: `/blog/${params.slug}` }],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: p.title,
+            description: p.excerpt,
+            image: [ogImage],
+            datePublished: p.date,
+            dateModified: p.date,
+            author: { "@type": "Organization", name: p.author },
+            publisher: {
+              "@type": "Organization",
+              name: BRAND.name,
+              url: SITE_URL,
+            },
+            mainEntityOfPage: { "@type": "WebPage", "@id": url },
+            articleSection: p.category,
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+              { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
+              { "@type": "ListItem", position: 3, name: p.title, item: url },
+            ],
+          }),
+        },
+      ],
     };
   },
   component: Post,
@@ -114,4 +203,3 @@ function Post() {
     </>
   );
 }
-
