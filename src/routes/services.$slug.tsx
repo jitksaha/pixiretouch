@@ -4,10 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Container, Section, Eyebrow } from "@/components/site/Container";
 import { TrialDialog } from "@/components/site/TrialDialog";
-import { SERVICES, PROCESS, TESTIMONIALS, PORTFOLIO, type PortfolioItem } from "@/content/site";
+import { SERVICES, PROCESS, TESTIMONIALS, PORTFOLIO, BRAND, type PortfolioItem } from "@/content/site";
 import { serviceImage } from "@/content/serviceImages";
 import { BeforeAfter } from "@/components/site/BeforeAfter";
 import { useServiceOverrides, applyServiceOverride } from "@/lib/dynamic-content";
+import { supabase } from "@/integrations/supabase/client";
+
+const SITE_URL = "https://pixiretouch.lovable.app";
 
 const PROCESS_ICONS = [Send, Sparkles, Upload, FileCheck];
 const FORMATS = ["JPG", "PNG", "TIFF", "PSD", "WEBP", "RAW"];
