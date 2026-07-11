@@ -10,6 +10,9 @@ import { Container, Section } from "@/components/site/Container";
 import { CheckCircle2, AlertCircle, MailCheck } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    next: typeof search.next === "string" && isSafeNextPath(search.next) ? search.next : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Admin Sign In — Pixi Retouch" },
@@ -28,8 +31,21 @@ const resetSchema = z.object({
   email: z.string().trim().email().max(255),
 });
 
+function isSafeNextPath(value: string) {
+  return value.startsWith("/") && !value.startsWith("//") && !value.includes("\\");
+}
+
+function goToNextOrAdmin(next: string | undefined, navigate: ReturnType<typeof useNavigate>) {
+  if (next && isSafeNextPath(next)) {
+    window.location.href = next;
+    return;
+  }
+  navigate({ to: "/admin" });
+}
+
 function AuthPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const [mode, setMode] = useState<"signin" | "forgot">("signin");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,9 +53,9 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/admin" });
+      if (data.user) goToNextOrAdmin(next, navigate);
     });
-  }, [navigate]);
+  }, [navigate, next]);
 
   const switchMode = (next: "signin" | "forgot") => {
     setMode(next); setError(null); setSentTo(null);
@@ -55,7 +71,7 @@ function AuthPage() {
     const { error: signErr } = await supabase.auth.signInWithPassword(parsed.data);
     setLoading(false);
     if (signErr) { setError(signErr.message); return; }
-    navigate({ to: "/admin" });
+    goToNextOrAdmin(next, navigate);
   };
 
   const onForgot = async (e: React.FormEvent<HTMLFormElement>) => {
