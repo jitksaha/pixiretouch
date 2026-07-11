@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.1",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://xpksnwrvclhmflpcbuci.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "pixi-retouch-mcp",
+      "version": "0.1.0",
+      "title": "Pixi Retouch MCP"
+    },
+    "tools": [
+      {
+        "name": "get_studio_overview",
+        "title": "Get studio overview",
+        "description": "Return admin-only counts for quote requests, contact messages, content, portfolio, and media in Pixi Retouch.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": null,
+        "outputSchema": null
+      },
+      {
+        "name": "list_studio_records",
+        "title": "List studio records",
+        "description": "List recent admin-only Pixi Retouch records from quotes, messages, blog, portfolio, media, or services.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "table": {
+              "type": "string",
+              "enum": [
+                "quote_requests",
+                "contact_messages",
+                "blog_posts",
+                "portfolio_items",
+                "media_assets",
+                "services_content"
+              ],
+              "description": "Which studio table to list."
+            },
+            "status": {
+              "type": "string",
+              "description": "Optional status filter for quote_requests or contact_messages."
+            },
+            "published": {
+              "type": "boolean",
+              "description": "Optional published filter for blog_posts or portfolio_items."
+            },
+            "query": {
+              "type": "string",
+              "description": "Optional text search for names, emails, titles, slugs, categories, or service names."
+            },
+            "limit": {
+              "type": "number",
+              "description": "Maximum rows to return. The server clamps this to a safe range."
+            }
+          },
+          "required": [
+            "table"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
