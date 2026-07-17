@@ -73,7 +73,7 @@ function AboutPage() {
                 CEO &amp; Owner
               </p>
               <h3 className="mt-2 font-display text-3xl md:text-4xl">
-                SK Munna
+                Asiful Hasan Munna
               </h3>
               <p className="mt-5 text-base text-muted-foreground md:text-lg">
                 SK Munna founded Pixi Retouch with a simple belief: every
