@@ -76,7 +76,7 @@ function AboutPage() {
                 Asiful Hasan Munna
               </h3>
               <p className="mt-5 text-base text-muted-foreground md:text-lg">
-                SK Munna founded Pixi Retouch with a simple belief: every
+                Asiful Hasan Munna founded Pixi Retouch with a simple belief: every
                 product image deserves the same care a brand puts into the
                 product itself. He leads the studio's craft standards,
                 client relationships and the team of retouchers who
