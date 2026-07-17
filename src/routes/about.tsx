@@ -62,7 +62,7 @@ function AboutPage() {
             <div className="overflow-hidden rounded-2xl border border-border bg-muted shadow-lift">
               <img
                 src={ceoPhoto.url}
-                alt="SK Munna — CEO & Owner of Pixi Retouch"
+                alt="Asiful Hasan Munna — CEO & Owner of Pixi Retouch"
                 className="aspect-[4/5] w-full object-cover"
                 loading="lazy"
               />
