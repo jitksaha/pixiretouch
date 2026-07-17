@@ -91,7 +91,7 @@ function AboutPage() {
               <div className="mt-7 flex flex-wrap gap-3">
                 <Button asChild>
                   <a href={`mailto:${BRAND.email}`} className="gap-2">
-                    <Mail className="h-4 w-4" /> Contact SK Munna
+                    <Mail className="h-4 w-4" /> Contact Asiful Hasan Munna
                   </a>
                 </Button>
                 <Button variant="outline" asChild>
