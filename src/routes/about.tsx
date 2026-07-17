@@ -62,7 +62,7 @@ function AboutPage() {
             <div className="overflow-hidden rounded-2xl border border-border bg-muted shadow-lift">
               <img
                 src={ceoPhoto.url}
-                alt="SK Munna — CEO & Owner of Pixi Retouch"
+                alt="Asiful Hasan Munna — CEO & Owner of Pixi Retouch"
                 className="aspect-[4/5] w-full object-cover"
                 loading="lazy"
               />
@@ -73,10 +73,10 @@ function AboutPage() {
                 CEO &amp; Owner
               </p>
               <h3 className="mt-2 font-display text-3xl md:text-4xl">
-                SK Munna
+                Asiful Hasan Munna
               </h3>
               <p className="mt-5 text-base text-muted-foreground md:text-lg">
-                SK Munna founded Pixi Retouch with a simple belief: every
+                Asiful Hasan Munna founded Pixi Retouch with a simple belief: every
                 product image deserves the same care a brand puts into the
                 product itself. He leads the studio's craft standards,
                 client relationships and the team of retouchers who
@@ -91,7 +91,7 @@ function AboutPage() {
               <div className="mt-7 flex flex-wrap gap-3">
                 <Button asChild>
                   <a href={`mailto:${BRAND.email}`} className="gap-2">
-                    <Mail className="h-4 w-4" /> Contact SK Munna
+                    <Mail className="h-4 w-4" /> Contact Asiful Hasan Munna
                   </a>
                 </Button>
                 <Button variant="outline" asChild>
